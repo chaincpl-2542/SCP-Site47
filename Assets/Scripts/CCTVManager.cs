@@ -6,7 +6,7 @@ public class CCTVManager : MonoBehaviour
 {
     public Camera mainCamera;
     public Camera[] cctvCameras;
-    private int currentCameraIndex = -1;
+    [SerializeField] private int currentCameraIndex = -1;
     
     void Start()
     {
@@ -37,6 +37,11 @@ public class CCTVManager : MonoBehaviour
                 ReturnToMainCamera();
             }
         }
+    }
+
+    public void GetCurrentCamera()
+    {
+        SwitchToCamera(currentCameraIndex);
     }
 
     public void SwitchToCamera(int cameraIndex)
@@ -75,7 +80,6 @@ public class CCTVManager : MonoBehaviour
         }
 
         mainCamera.enabled=true;
-        currentCameraIndex = -1;
     }
 
 }

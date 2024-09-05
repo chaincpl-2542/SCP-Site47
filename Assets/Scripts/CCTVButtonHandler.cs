@@ -20,6 +20,6 @@ public class CCTVButtonHandler : MonoBehaviour
         cctvManager.SwitchToCamera(cameraIndex);
 
         
-        cctvUI.SetActive(false);
+        //cctvUI.SetActive(false);
     }
 }
