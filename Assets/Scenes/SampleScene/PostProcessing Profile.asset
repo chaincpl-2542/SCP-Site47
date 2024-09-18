@@ -15,7 +15,7 @@ MonoBehaviour:
   active: 1
   intensity:
     m_OverrideState: 1
-    m_Value: 0.43
+    m_Value: 0.3
   xMultiplier:
     m_OverrideState: 0
     m_Value: 1
@@ -43,7 +43,7 @@ MonoBehaviour:
   active: 1
   type:
     m_OverrideState: 1
-    m_Value: 1
+    m_Value: 9
   intensity:
     m_OverrideState: 1
     m_Value: 1
@@ -51,7 +51,7 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 0
   texture:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: {fileID: 0}
 --- !u!114 &11400000
 MonoBehaviour:
@@ -86,7 +86,7 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 1
   threshold:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 0.9
   intensity:
     m_OverrideState: 1
