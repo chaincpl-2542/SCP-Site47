@@ -11,6 +11,8 @@ public class CCTVManager : MonoBehaviour
     public Camera mainCamera;
     public Camera[] cctvCameras;
     [SerializeField] private int currentCameraIndex = -1;
+    [SerializeField] GameObject playerPostprocessing;
+    [SerializeField] GameObject cctvPostprocessing;
     
     private void Awake() 
     {
@@ -27,6 +29,8 @@ public class CCTVManager : MonoBehaviour
 
     void Start()
     {
+        cctvPostprocessing.SetActive(false);
+        playerPostprocessing.SetActive(true);
         mainCamera.gameObject.SetActive(true);
         mainCamera.enabled = true;
         foreach (Camera cctvCamera in cctvCameras)
@@ -80,6 +84,8 @@ public class CCTVManager : MonoBehaviour
 
             changeCamera();
         }
+        cctvPostprocessing.SetActive(true);
+        playerPostprocessing.SetActive(false);
     }
 
     public void SwitchToNextCamera(int direction)
@@ -101,6 +107,8 @@ public class CCTVManager : MonoBehaviour
         }
 
         mainCamera.enabled=true;
+        cctvPostprocessing.SetActive(false);
+        playerPostprocessing.SetActive(true);
     }
 
 }

@@ -12,32 +12,24 @@ public class SpawnPoint
 public class SCPTeleport : MonoBehaviour
 {
     public List<SpawnPoint> spawnPoints;
-    public float teleportInterval = 5f;
+    [SerializeField] private float teleportInterval = 5f;
+    [SerializeField] private float timer;
+    [SerializeField] private bool readyToTeleport;
+    private GameObject selectedSpawnPoint;
 
     private void Start()
     {
-        StartCoroutine(TeleportRoutine());
+        CCTVManager.Instance.changeCamera += TeleportTo;
+        RandomRoom();
+    }
 
-
-        IEnumerator TeleportRoutine()
-        {
-            while (true)
-            {
-                yield return new WaitForSeconds(teleportInterval);
-
-                GameObject selectedSpawnPoint = GetRandomSpawnPoint();
-                if (selectedSpawnPoint != null)
-                {
-                    TeleportTo(selectedSpawnPoint);
-                }
-            }
-        }
-
+    private void RandomRoom()
+    {
+        selectedSpawnPoint = GetRandomSpawnPoint();
 
         GameObject GetRandomSpawnPoint()
         {
             float totalProbability = 0f;
-
 
             foreach (SpawnPoint spawn in spawnPoints)
             {
@@ -60,13 +52,31 @@ public class SCPTeleport : MonoBehaviour
 
             return null;
         }
+    }
 
-
-        void TeleportTo(GameObject spawnPoint)
+    void Update()
+    {
+        timer += Time.deltaTime;
+        if(timer > teleportInterval)
         {
-            transform.position = spawnPoint.transform.position;
-            Debug.Log("SCP teleported to: " + spawnPoint.name);
-            CCTVManager.Instance.forceNoise();
+            timer = teleportInterval;
+            readyToTeleport = true;
+        }
+        else
+        {
+            readyToTeleport = false;
+        }
+
+    }
+
+    void TeleportTo()
+    {
+        if(readyToTeleport)
+        {
+            transform.position = selectedSpawnPoint.transform.position;
+            Debug.Log("SCP teleported to: " + selectedSpawnPoint.name);
+            RandomRoom();
+            timer = 0;
         }
     }
 }
