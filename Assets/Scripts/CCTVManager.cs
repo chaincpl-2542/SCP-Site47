@@ -1,13 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CCTVManager : MonoBehaviour
 {
+    public static CCTVManager Instance;
+    public Action forceNoise;
+    public Action changeCamera;
     public Camera mainCamera;
     public Camera[] cctvCameras;
     [SerializeField] private int currentCameraIndex = -1;
     
+    private void Awake() 
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
         mainCamera.gameObject.SetActive(true);
@@ -60,6 +77,8 @@ public class CCTVManager : MonoBehaviour
             
             currentCameraIndex = cameraIndex;
             cctvCameras[currentCameraIndex].gameObject.SetActive(true);
+
+            changeCamera();
         }
     }
 
@@ -70,6 +89,8 @@ public class CCTVManager : MonoBehaviour
         currentCameraIndex = (currentCameraIndex + direction + cctvCameras.Length) % cctvCameras.Length;
 
         cctvCameras[currentCameraIndex].gameObject.SetActive(true);
+
+        
     }
 
     public void ReturnToMainCamera()

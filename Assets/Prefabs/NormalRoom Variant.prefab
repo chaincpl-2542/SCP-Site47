@@ -63,6 +63,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: NormalRoom Variant
       objectReference: {fileID: 0}
+    - target: {fileID: 3946677949748944905, guid: 562e00cf96846427a857c0db8571b9c8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7968477975083243794, guid: 562e00cf96846427a857c0db8571b9c8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

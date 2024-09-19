@@ -66,6 +66,7 @@ public class SCPTeleport : MonoBehaviour
         {
             transform.position = spawnPoint.transform.position;
             Debug.Log("SCP teleported to: " + spawnPoint.name);
+            CCTVManager.Instance.forceNoise();
         }
     }
 }
