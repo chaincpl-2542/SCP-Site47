@@ -13,8 +13,10 @@ public class CCTVManager : MonoBehaviour
     [SerializeField] private int currentCameraIndex = -1;
     [SerializeField] GameObject playerPostprocessing;
     [SerializeField] GameObject cctvPostprocessing;
-    
-    private void Awake() 
+
+    private bool isInteractingWithPC = false;
+
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -33,16 +35,21 @@ public class CCTVManager : MonoBehaviour
         playerPostprocessing.SetActive(true);
         mainCamera.gameObject.SetActive(true);
         mainCamera.enabled = true;
+
         foreach (Camera cctvCamera in cctvCameras)
         {
             cctvCamera.gameObject.SetActive(false);
         }
+
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
-    
     void Update()
     {
-        if (currentCameraIndex >= 0)
+        
+        if (isInteractingWithPC && currentCameraIndex >= 0)
         {
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -69,46 +76,58 @@ public class CCTVManager : MonoBehaviour
     {
         if (cameraIndex >= 0 && cameraIndex < cctvCameras.Length)
         {
-            
             mainCamera.enabled = false;
 
-            
             if (currentCameraIndex >= 0 && currentCameraIndex < cctvCameras.Length)
             {
                 cctvCameras[currentCameraIndex].gameObject.SetActive(false);
             }
 
-            
             currentCameraIndex = cameraIndex;
             cctvCameras[currentCameraIndex].gameObject.SetActive(true);
 
-            changeCamera();
+            changeCamera?.Invoke();
         }
+
         cctvPostprocessing.SetActive(true);
         playerPostprocessing.SetActive(false);
+
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        
+        isInteractingWithPC = true;
     }
 
     public void SwitchToNextCamera(int direction)
     {
-        cctvCameras[currentCameraIndex].gameObject.SetActive(false);
+        if (currentCameraIndex >= 0)
+        {
+            cctvCameras[currentCameraIndex].gameObject.SetActive(false);
 
-        currentCameraIndex = (currentCameraIndex + direction + cctvCameras.Length) % cctvCameras.Length;
+            currentCameraIndex = (currentCameraIndex + direction + cctvCameras.Length) % cctvCameras.Length;
 
-        cctvCameras[currentCameraIndex].gameObject.SetActive(true);
-
-        
+            cctvCameras[currentCameraIndex].gameObject.SetActive(true);
+        }
     }
 
     public void ReturnToMainCamera()
     {
-        if(currentCameraIndex >= 0 && cctvCameras[currentCameraIndex] != null)
+        if (currentCameraIndex >= 0 && cctvCameras[currentCameraIndex] != null)
         {
             cctvCameras[currentCameraIndex].gameObject.SetActive(false);
         }
 
-        mainCamera.enabled=true;
+        mainCamera.enabled = true;
         cctvPostprocessing.SetActive(false);
         playerPostprocessing.SetActive(true);
-    }
 
+       
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        
+        isInteractingWithPC = false;
+    }
 }
