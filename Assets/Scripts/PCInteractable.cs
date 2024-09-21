@@ -4,25 +4,27 @@ using UnityEngine;
 
 public class PCInteractable : MonoBehaviour
 {
-    public GameObject cctvUI;
-    public Camera mainCamera;
+    public GameObject cctvUI;           
+    public Camera playerCamera;         
+    public float interactRange = 3f;    
     private bool isUIOpen = false;
+    private FirstPersonController playerMovement; 
 
-    public void Start()
+    void Start()
     {
-       
-        cctvUI.SetActive(false);
+        cctvUI.SetActive(false); 
+        playerMovement = FindObjectOfType<FirstPersonController>(); 
     }
 
     void Update()
     {
-       
-        if (!isUIOpen && Input.GetMouseButtonDown(0))
+        
+        if (!isUIOpen && Input.GetKeyDown(KeyCode.E))
         {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit, interactRange))
             {
                 if (hit.collider != null && hit.collider.gameObject == gameObject)
                 {
@@ -31,7 +33,7 @@ public class PCInteractable : MonoBehaviour
             }
         }
 
-       
+        
         if (isUIOpen && Input.GetKeyDown(KeyCode.Escape))
         {
             CloseCCTVUI();
@@ -40,14 +42,26 @@ public class PCInteractable : MonoBehaviour
 
     void ShowCCTVUI()
     {
-        cctvUI.GetComponentInParent<CCTVManager>().GetCurrentCamera();
+        cctvUI.GetComponentInParent<CCTVManager>().GetCurrentCamera(); 
         cctvUI.SetActive(true);
         isUIOpen = true;
+
+        
+        if (playerMovement != null)
+        {
+            playerMovement.enabled = false;
+        }
     }
 
     void CloseCCTVUI()
     {
         cctvUI.SetActive(false);
         isUIOpen = false;
+
+        
+        if (playerMovement != null)
+        {
+            playerMovement.enabled = true;
+        }
     }
 }
