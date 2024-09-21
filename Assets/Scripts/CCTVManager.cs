@@ -123,11 +123,11 @@ public class CCTVManager : MonoBehaviour
         cctvPostprocessing.SetActive(false);
         playerPostprocessing.SetActive(true);
 
-       
+        
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        
+
         isInteractingWithPC = false;
     }
 }
