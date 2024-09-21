@@ -1,5 +1,10 @@
 fileFormatVersion: 2
-guid: 99c9720ab356a0642a771bea13969a05
+<<<<<<<< HEAD:Assets/Scenes/MainScene 1.unity.meta
+guid: c3d2481b40fb048d9a2d822e13f6b8c8
+========
+guid: ac59ff6520b0d914fb3032ca1f3f3f44
+folderAsset: yes
+>>>>>>>> bf64c0170259678c89bc9d9bd6b943223eda8352:Assets/Animations.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
