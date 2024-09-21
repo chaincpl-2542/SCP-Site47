@@ -1,8 +1,14 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations.meta
 guid: ac59ff6520b0d914fb3032ca1f3f3f44
 folderAsset: yes
 DefaultImporter:
+========
+guid: 54139cb8735691348b494277fc2d45a1
+NativeFormatImporter:
+>>>>>>>> bf64c0170259678c89bc9d9bd6b943223eda8352:Assets/Animations/SCPEating.anim.meta
   externalObjects: {}
+  mainObjectFileID: 7400000
   userData: 
   assetBundleName: 
   assetBundleVariant: 
