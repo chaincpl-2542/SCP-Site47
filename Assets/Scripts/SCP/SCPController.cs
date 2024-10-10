@@ -29,9 +29,9 @@ public class SCPController : MonoBehaviour
     private bool playerInSight; // Is the player visible to SCP?
     private bool playerHeard; // Has the SCP heard the player?
     private Vector3 lastSoundPosition; // Last position where SCP heard the player
+    private bool isCatchPlayer = false;
 
     public SimpleFirstPersonController simpleFirstPersonController; // Reference to the player's movement script
-    private Camera playerCamera; // Reference to the player's camera
 
     #endregion
 
@@ -40,10 +40,8 @@ public class SCPController : MonoBehaviour
     private void Start()
     {
         StartCoroutine(BlinkRandomly());
-        if(simpleFirstPersonController)
-            playerCamera = simpleFirstPersonController.playerCamera.GetComponent<Camera>();
+        SoundManager.instance.PlayFloatingSound();
 
-        // Set the NavMeshAgent's speed and acceleration
         if (agent)
         {
             agent.speed = agentSpeed;
@@ -70,7 +68,11 @@ public class SCPController : MonoBehaviour
         // SCP catches the player if close enough
         if (Vector3.Distance(player.position, transform.position) <= attackRange)
         {
-            CatchPlayer(); // Stop the player and make SCP visible permanently
+            if(!isCatchPlayer)
+            {
+                CatchPlayer(); // Stop the player and make SCP visible permanently
+                isCatchPlayer = true;
+            }
         }
 
         UpdateAnimation();
@@ -93,6 +95,7 @@ public class SCPController : MonoBehaviour
         StopAllCoroutines(); // Stop blinking behavior
         scpModel.SetActive(true); // Make SCP permanently visible
 
+        SoundManager.instance.PlayJumpscareSound();
         LookAtPlayer();
 
         // Stop player movement and camera control
@@ -159,6 +162,9 @@ public class SCPController : MonoBehaviour
             isVisible = true;
             agent.isStopped = true;
             agent.velocity = Vector3.zero;
+
+            // Play the glitch sound when the SCP becomes visible
+            SoundManager.instance.PlayGlitchSound();
 
             float visibleTime = Random.Range(minVisibleTime, maxVisibleTime);
             yield return new WaitForSeconds(visibleTime);
