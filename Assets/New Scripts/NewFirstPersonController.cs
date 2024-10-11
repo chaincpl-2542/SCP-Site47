@@ -1,12 +1,23 @@
 using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
 namespace Peerawit
 {
 
     public class NewFirstPersonController : MonoBehaviour
     {
+        public float headBobFrequency = 1.5f;
+        public float headBobAmplitude = 0.05f;
+        private float headBobTimer = 0f;
+        private Vector3 originalHeadPosition;
 
+        public float stamina = 100f;
+        public float maxStamina = 100f;
+        public float staminaDrain = 10f;
+        public float staminaRecovery = 5f;
+        private bool isSprinting;
+
+        public float leanAngle = 15f;
+        public float leanSpeed = 5f;
+        private float currentLean = 0f;
 
         public Camera playerCamera;
         public float mouseSensitivity = 100f;
@@ -28,6 +39,10 @@ namespace Peerawit
         void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
+            controller = GetComponent<CharacterController>();
+            originalHeight = controller.height;
+            originalHeadPosition = playerCamera.transform.localPosition;
+            Cursor.lockState = CursorLockMode.Locked;
 
             controller = GetComponent<CharacterController>();
             originalHeight = controller.height;
@@ -35,6 +50,10 @@ namespace Peerawit
 
         void Update()
         {
+            HandleMouseLook();
+            HandleHeadBobbing();
+            HandleLeaning();
+            HandleStamina();
             HandleMouseLook();
 
             isGrounded = controller.isGrounded;
@@ -82,6 +101,58 @@ namespace Peerawit
             controller.Move(velocity * Time.deltaTime);
         }
 
+        void HandleHeadBobbing()
+        {
+            if (isGrounded && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0))
+            {
+                headBobTimer += Time.deltaTime * headBobFrequency;
+                Vector3 bobOffset = new Vector3(Mathf.Sin(headBobTimer) * headBobAmplitude * 0.5f, Mathf.Sin(headBobTimer * 2) * headBobAmplitude, 0);
+                playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, originalHeadPosition + bobOffset, Time.deltaTime * 5f);
+            }
+            else
+            {
+                headBobTimer = 0;
+                playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, originalHeadPosition, Time.deltaTime * 5f);
+            }
+        }
+
+        void HandleStamina()
+        {
+            isSprinting = Input.GetKey(KeyCode.LeftShift) && isGrounded && stamina > 0;
+            if (isSprinting)
+            {
+                stamina -= staminaDrain * Time.deltaTime;
+                stamina = Mathf.Clamp(stamina, 0, maxStamina);
+            }
+            else
+            {
+                stamina += staminaRecovery * Time.deltaTime;
+                stamina = Mathf.Clamp(stamina, 0, maxStamina);
+            }
+        }
+
+        void HandleLeaning()
+        {
+            float targetLeanAngle = 0f;
+            Vector3 targetLeanPosition = Vector3.zero;
+
+            if (Input.GetKey(KeyCode.Q))
+            {
+                targetLeanAngle = -leanAngle;
+                targetLeanPosition = new Vector3(-leanAngle * 0.01f, 0, 0);
+            }
+            else if (Input.GetKey(KeyCode.E))
+            {
+                targetLeanAngle = leanAngle;
+                targetLeanPosition = new Vector3(leanAngle * 0.01f, 0, 0);
+            }
+
+            currentLean = Mathf.Lerp(currentLean, targetLeanAngle, Time.deltaTime * leanSpeed);
+            playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, originalHeadPosition + targetLeanPosition, Time.deltaTime * leanSpeed);
+            playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, currentLean);
+        }
+
+
         void HandleMouseLook()
         {
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
@@ -92,10 +163,6 @@ namespace Peerawit
 
             playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
             transform.Rotate(Vector3.up * mouseX);
-            controller.Move(velocity * Time.deltaTime);
         }
     }
-
-
-
 }
