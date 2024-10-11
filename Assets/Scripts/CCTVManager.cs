@@ -10,9 +10,18 @@ public class CCTVManager : MonoBehaviour
     public Action changeCamera;
     public Camera mainCamera;
     public Camera[] cctvCameras;
+    public GameObject[] screenCCTV;
+    public GameObject screenMain;
+    public GameObject screenCamera;
+    public GameObject nightVisionCamera;
+    public GameObject[] nightVisionCCTV;
     [SerializeField] private int currentCameraIndex = -1;
+    [SerializeField] private bool isNightMode = false, isCameraMode = false, isCCTVMode = false;
     [SerializeField] GameObject playerPostprocessing;
     [SerializeField] GameObject cctvPostprocessing;
+    [SerializeField] CameraRotation[] cameraRotations;
+    BatteryController batteryController;
+
     
     private void Awake() 
     {
@@ -33,10 +42,11 @@ public class CCTVManager : MonoBehaviour
         playerPostprocessing.SetActive(true);
         mainCamera.gameObject.SetActive(true);
         mainCamera.enabled = true;
-        foreach (Camera cctvCamera in cctvCameras)
+        cameraRotations[0].enabled = true;
+        /*foreach (Camera cctvCamera in cctvCameras)
         {
             cctvCamera.gameObject.SetActive(false);
-        }
+        }*/
     }
 
     
@@ -52,17 +62,152 @@ public class CCTVManager : MonoBehaviour
             {
                 SwitchToNextCamera(1);
             }
+        }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ReturnToMainCamera();
+            ReturnMainScreen();
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            ActivateCamera();
+        }
+
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            ActivateCCTV();
+        }
+
+        if(isCameraMode || isCCTVMode)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
             {
-                ReturnToMainCamera();
+                if (currentCameraIndex == -1)
+                {
+                    ToggleNightVisionCamera();
+                }
+                else
+                {
+                    ToggleNightVisionCCTV();
+                }
             }
+        }
+
+    }
+
+    public void ActivateCamera()
+    {
+        ResetMode();
+        ResetCamRotate();
+        currentCameraIndex = -1;
+        CloseAllScreen();
+        screenCamera.SetActive(true);
+        isCameraMode = true;
+        cameraRotations[0].enabled = true;
+    }
+
+    public void ActivateCCTV()
+    {
+        ResetMode();
+        ResetCamRotate();
+        currentCameraIndex = 0;
+        isCCTVMode = true;
+        CloseAllScreen();
+        screenCCTV[currentCameraIndex].gameObject.SetActive(true);
+        cameraRotations[currentCameraIndex+1].enabled = true;
+    }
+
+    public void ToggleNightVisionCamera()
+    {
+        CloseAllScreen();
+        if (!isNightMode)
+        {
+            nightVisionCamera.SetActive(true);
+            isNightMode = true;
+            batteryController = FindObjectOfType<BatteryController>();
+            batteryController.ToggleNightMode(isNightMode);
+        }
+        else
+        {
+            nightVisionCamera.SetActive(false);
+            screenCamera.SetActive(true);
+            isNightMode = false;
+            batteryController = FindObjectOfType<BatteryController>();
+            batteryController.ToggleNightMode(isNightMode);
+        }
+    }
+
+    public void ToggleNightVisionCCTV()
+    {
+        CloseAllScreen();
+        if (!isNightMode)
+        {
+            nightVisionCCTV[currentCameraIndex].SetActive(true);
+            isNightMode = true;
+            batteryController = FindObjectOfType<BatteryController>();
+            batteryController.ToggleNightMode(isNightMode);
+        }
+        else
+        {
+            nightVisionCCTV[currentCameraIndex].SetActive(false);
+            screenCCTV[currentCameraIndex].gameObject.SetActive(true);
+            isNightMode = false;
+            batteryController = FindObjectOfType<BatteryController>();
+            batteryController.ToggleNightMode(isNightMode);
+        }
+    }
+
+    public void CloseAllScreen()
+    {
+        screenMain.SetActive(false);
+        screenCamera.SetActive(false);
+        nightVisionCamera.SetActive(false);
+        foreach (GameObject screenCCTV in screenCCTV)
+        {
+            screenCCTV.gameObject.SetActive(false);
+        }
+        foreach (GameObject nightVisionCCTV in nightVisionCCTV)
+        {
+            nightVisionCCTV.gameObject.SetActive(false);
+        }
+    }
+
+    public void ResetMode()
+    {
+        isCameraMode = false;
+        isCCTVMode = false;
+        isNightMode = false;
+        batteryController = FindObjectOfType<BatteryController>();
+        batteryController.ToggleNightMode(isNightMode);
+    }
+
+    public void ResetCamRotate()
+    {
+        foreach (CameraRotation cameraRotation in cameraRotations)
+        {
+            cameraRotation.enabled = false;
         }
     }
 
     public void GetCurrentCamera()
     {
         SwitchToCamera(currentCameraIndex);
+    }
+
+    public void ReturnMainScreen()
+    {
+        currentCameraIndex = -1;
+        ResetMode();
+        ResetCamRotate();
+        screenCamera.SetActive(false);
+        foreach (GameObject screenCCTV in screenCCTV)
+        {
+            screenCCTV.gameObject.SetActive(false);
+        }
+        screenMain.SetActive(true);
+        cameraRotations[0].enabled = true;
     }
 
     public void SwitchToCamera(int cameraIndex)
@@ -90,13 +235,20 @@ public class CCTVManager : MonoBehaviour
 
     public void SwitchToNextCamera(int direction)
     {
-        cctvCameras[currentCameraIndex].gameObject.SetActive(false);
+        ResetCamRotate();
+        screenCCTV[currentCameraIndex].gameObject.SetActive(false);
+        //cctvCameras[currentCameraIndex].gameObject.SetActive(false);
 
-        currentCameraIndex = (currentCameraIndex + direction + cctvCameras.Length) % cctvCameras.Length;
+        currentCameraIndex = (currentCameraIndex + direction + screenCCTV.Length) % screenCCTV.Length;
 
-        cctvCameras[currentCameraIndex].gameObject.SetActive(true);
+        //cctvCameras[currentCameraIndex].gameObject.SetActive(true);
+        screenCCTV[currentCameraIndex].gameObject.SetActive(true);
 
-        
+        cameraRotations[currentCameraIndex+1].enabled = true;
+
+        isNightMode = false;
+        batteryController = FindObjectOfType<BatteryController>();
+        batteryController.ToggleNightMode(isNightMode);
     }
 
     public void ReturnToMainCamera()
