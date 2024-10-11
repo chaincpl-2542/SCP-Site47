@@ -54,17 +54,56 @@ public class CCTVManager : MonoBehaviour
     
     void Update()
     {
-        if (currentCameraIndex >= 0)
+        if (isTablet)
         {
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (currentCameraIndex >= 0)
             {
-                SwitchToNextCamera(-1);
-                switchCamSound.Play();
+                if (Input.GetKeyDown(KeyCode.Q))
+                {
+                    SwitchToNextCamera(-1);
+                    switchCamSound.Play();
+                }
+                else if (Input.GetKeyDown(KeyCode.E))
+                {
+                    SwitchToNextCamera(1);
+                    switchCamSound.Play();
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.E))
+
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
-                SwitchToNextCamera(1);
-                switchCamSound.Play();
+                ReturnToMainCamera();
+                ReturnMainScreen();
+                changeModeSound.Play();
+            }
+
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                ActivateCamera();
+                changeModeSound.Play();
+            }
+
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                ActivateCCTV();
+                changeModeSound.Play();
+            }
+
+            if (isCameraMode || isCCTVMode)
+            {
+                if (Input.GetKeyDown(KeyCode.X))
+                {
+                    if (currentCameraIndex == -1)
+                    {
+                        ToggleNightVisionCamera();
+                        changeModeSound.Play();
+                    }
+                    else
+                    {
+                        ToggleNightVisionCCTV();
+                        changeModeSound.Play();
+                    }
+                }
             }
         }
 
@@ -83,41 +122,7 @@ public class CCTVManager : MonoBehaviour
             pickUpCamSound.Play();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ReturnToMainCamera();
-            ReturnMainScreen();
-            changeModeSound.Play();
-        }
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            ActivateCamera();
-            changeModeSound.Play();
-        }
-
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            ActivateCCTV();
-            changeModeSound.Play();
-        }
-
-        if(isCameraMode || isCCTVMode)
-        {
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                if (currentCameraIndex == -1)
-                {
-                    ToggleNightVisionCamera();
-                    changeModeSound.Play();
-                }
-                else
-                {
-                    ToggleNightVisionCCTV();
-                    changeModeSound.Play();
-                }
-            }
-        }
 
     }
 
