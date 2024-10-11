@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CCTVManager : MonoBehaviour
 {
+    public GameObject tabletSCP;
     public static CCTVManager Instance;
     public Action forceNoise;
     public Action changeCamera;
@@ -16,10 +17,11 @@ public class CCTVManager : MonoBehaviour
     public GameObject nightVisionCamera;
     public GameObject[] nightVisionCCTV;
     [SerializeField] private int currentCameraIndex = -1;
-    [SerializeField] private bool isNightMode = false, isCameraMode = false, isCCTVMode = false;
+    [SerializeField] private bool isNightMode = false, isCameraMode = false, isCCTVMode = false, isTablet = false;
     [SerializeField] GameObject playerPostprocessing;
     [SerializeField] GameObject cctvPostprocessing;
     [SerializeField] CameraRotation[] cameraRotations;
+    [SerializeField] AudioSource pickUpCamSound, changeModeSound, switchCamSound;
     BatteryController batteryController;
 
     
@@ -57,27 +59,47 @@ public class CCTVManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 SwitchToNextCamera(-1);
+                switchCamSound.Play();
             }
             else if (Input.GetKeyDown(KeyCode.E))
             {
                 SwitchToNextCamera(1);
+                switchCamSound.Play();
             }
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (!isTablet)
+            {
+                tabletSCP.SetActive(true);
+                isTablet = true;
+            }
+            else
+            {
+                tabletSCP.SetActive(false);
+                isTablet = false;
+            }
+            pickUpCamSound.Play();
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             ReturnToMainCamera();
             ReturnMainScreen();
+            changeModeSound.Play();
         }
 
         if (Input.GetKeyDown(KeyCode.C))
         {
             ActivateCamera();
+            changeModeSound.Play();
         }
 
         if (Input.GetKeyDown(KeyCode.V))
         {
             ActivateCCTV();
+            changeModeSound.Play();
         }
 
         if(isCameraMode || isCCTVMode)
@@ -87,10 +109,12 @@ public class CCTVManager : MonoBehaviour
                 if (currentCameraIndex == -1)
                 {
                     ToggleNightVisionCamera();
+                    changeModeSound.Play();
                 }
                 else
                 {
                     ToggleNightVisionCCTV();
+                    changeModeSound.Play();
                 }
             }
         }
