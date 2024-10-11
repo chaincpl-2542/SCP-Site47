@@ -18,12 +18,6 @@ public class CCTVButtonHandler : MonoBehaviour
             mainScreenUI.SetActive(true);
         }
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            CloseAllUI();
-            cameraScreenUI.SetActive(true);
-        }
-
         if (Input.GetKeyDown(KeyCode.V))
         {
             CloseAllUI();

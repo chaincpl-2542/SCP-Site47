@@ -97,6 +97,8 @@ GameObject:
   - component: {fileID: 9207851331562573600}
   - component: {fileID: 8628764266457687011}
   - component: {fileID: 4916995761172275742}
+  - component: {fileID: 976096926647920179}
+  - component: {fileID: 1249567741960419532}
   m_Layer: 0
   m_Name: LP_Bay_Door_Wall_snaps
   m_TagString: Untagged
@@ -188,8 +190,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.30000785, y: 9.000002, z: 6.000002}
-  m_Center: {x: 0.0000025182962, y: 4.5, z: 3.000001}
+  m_Size: {x: 0.30000785, y: 4.418066, z: 6.0000033}
+  m_Center: {x: 0.000002514571, y: 6.7909803, z: 3.0000017}
 --- !u!65 &8628764266457687011
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -232,6 +234,48 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.03, y: 0.87, z: 0.19}
   m_Center: {x: 0.31, y: 1.41, z: 0.7}
+--- !u!65 &976096926647920179
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2647211758135124163}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3000133, y: 9.99998, z: 1.1518822}
+  m_Center: {x: 0.0000003632158, y: 4.000014, z: 0.5759394}
+--- !u!65 &1249567741960419532
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2647211758135124163}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3000133, y: 9.999981, z: 1.1971757}
+  m_Center: {x: 0.0000003632158, y: 4.000014, z: 5.4014163}
 --- !u!1 &2702167651921923441
 GameObject:
   m_ObjectHideFlags: 0

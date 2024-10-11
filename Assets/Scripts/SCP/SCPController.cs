@@ -7,6 +7,7 @@ public class SCPController : MonoBehaviour
     #region Variables
 
     public Transform player;
+    public SCPState SCP_State;
     public NavMeshAgent agent;
     public float agentSpeed = 3f;
     public float agentAcceleration = 1000f; // High acceleration to instantly reach max speed
@@ -77,6 +78,28 @@ public class SCPController : MonoBehaviour
 
         UpdateAnimation();
         DebugRayToPlayer();
+
+        if(SCP_State == SCPState.normal)
+        {
+            invisibleDuration = 0.8f;
+            minVisibleTime = 0.3f;
+            maxVisibleTime = 0.5f;
+            agentSpeed = 5;
+        }
+        else if(SCP_State == SCPState.Angry)
+        {
+            invisibleDuration = 0.8f;
+            minVisibleTime = 1f;
+            maxVisibleTime = 2f;
+            agentSpeed = 5;
+        }
+        else if(SCP_State == SCPState.Mad)
+        {
+            invisibleDuration = 0.6f;
+            minVisibleTime = 0.1f;
+            maxVisibleTime = 0.3f;
+            agentSpeed = 7;
+        }
     }
 
     #endregion
@@ -91,6 +114,12 @@ public class SCPController : MonoBehaviour
 
     void CatchPlayer()
     {
+        foreach(Transform child in transform)
+        {
+            child.gameObject.layer = 0;
+        }
+        
+
         // Stop SCP from going invisible once the player is caught
         StopAllCoroutines(); // Stop blinking behavior
         scpModel.SetActive(true); // Make SCP permanently visible
@@ -114,6 +143,8 @@ public class SCPController : MonoBehaviour
         agent.velocity = Vector3.zero;
 
         Debug.Log("SCP has caught the player!");
+
+        GameManager.Instance.RestartGame();
     }
 
     void LookAtPlayer()
@@ -164,7 +195,8 @@ public class SCPController : MonoBehaviour
             agent.velocity = Vector3.zero;
 
             // Play the glitch sound when the SCP becomes visible
-            SoundManager.instance.PlayGlitchSound();
+            if(CCTVManager.Instance.isTablet)
+                SoundManager.instance.PlayGlitchSound();
 
             float visibleTime = Random.Range(minVisibleTime, maxVisibleTime);
             yield return new WaitForSeconds(visibleTime);
@@ -253,4 +285,10 @@ public class SCPController : MonoBehaviour
     }
 
     #endregion
+    public enum SCPState
+    {
+        normal,
+        Angry,
+        Mad
+    }
 }

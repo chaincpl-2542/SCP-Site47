@@ -38,6 +38,15 @@ namespace Peerawit
         public float gravity = -9.81f;
         private bool isGrounded;
         private bool isCrouching = false;
+        public bool disablePlayerControll = false;
+        private Vector3 originalCameraPosition; 
+        private Vector3 targetCameraPosition;
+            
+        private bool smoothLookAtSCP = false;
+        private Quaternion targetRotation;
+        public float smoothLookSpeed = 2f;
+        private bool moveCameraCloser = false;
+        public float moveSpeed = 2f;
 
         void Start()
         {
@@ -49,11 +58,14 @@ namespace Peerawit
 
         void Update()
         {
-            HandleMouseLook();
-            HandleFieldOfView();
-            HandleStamina();
-            HandleHeadBobbing();
-            HandleLeaning();
+            if(!disablePlayerControll)
+            {
+                HandleMouseLook();
+                HandleFieldOfView();
+                HandleStamina();
+                HandleHeadBobbing();
+                HandleLeaning();
+            }
 
             // Movement handling
             isGrounded = controller.isGrounded;
@@ -110,8 +122,8 @@ namespace Peerawit
             float tiltAngle = Mathf.Clamp(-mouseX * 0.5f, -10f, 10f);
             float strafeTiltAngle = Mathf.Clamp(strafe * 5f, -5f, 5f);
 
-            Quaternion targetRotation = Quaternion.Euler(xRotation, 0f, tiltAngle + strafeTiltAngle + currentLean);
-            playerCamera.transform.localRotation = Quaternion.Slerp(playerCamera.transform.localRotation, targetRotation, Time.deltaTime * 5f);
+            //Quaternion targetRotation = Quaternion.Euler(xRotation, 0f, tiltAngle + strafeTiltAngle + currentLean);
+            //playerCamera.transform.localRotation = Quaternion.Slerp(playerCamera.transform.localRotation, targetRotation, Time.deltaTime * 5f);
 
             transform.Rotate(Vector3.up * mouseX);
         }
@@ -178,6 +190,45 @@ namespace Peerawit
             {
                 velocity.x = Mathf.Lerp(velocity.x, 0, Time.fixedDeltaTime * 3f);
                 velocity.z = Mathf.Lerp(velocity.z, 0, Time.fixedDeltaTime * 3f);
+            }
+        }
+    
+
+        public void StartSmoothLookAt(Transform target)
+        {
+            disablePlayerControll = true; // Disable player control during the look-at process
+            Vector3 directionToSCP = target.position - playerCamera.transform.position;
+            targetRotation = Quaternion.LookRotation(directionToSCP);
+            smoothLookAtSCP = true;
+        }
+
+        void SmoothLookAtSCP()
+        {
+            playerCamera.transform.rotation = Quaternion.Slerp(playerCamera.transform.rotation, targetRotation, Time.deltaTime * smoothLookSpeed);
+            if (Quaternion.Angle(playerCamera.transform.rotation, targetRotation) < 0.1f)
+            {
+                smoothLookAtSCP = false; // Disable smooth look after reaching the target rotation
+            }
+        }
+
+        // Call this method to start moving the camera closer to the SCP
+        public void StartMoveCloser(Vector3 targetPosition)
+        {
+            originalCameraPosition = playerCamera.transform.position;
+            targetCameraPosition = targetPosition; // The position near SCP's face
+            moveCameraCloser = true;
+        }
+
+        // Smoothly moves the camera toward the target position (close to the SCP)
+        void MoveCameraCloser()
+        {
+            // Lerp the camera position closer to the SCP over time
+            playerCamera.transform.position = Vector3.Lerp(playerCamera.transform.position, targetCameraPosition, Time.deltaTime * moveSpeed);
+
+            // If the camera reaches near the target position, stop moving
+            if (Vector3.Distance(playerCamera.transform.position, targetCameraPosition) < 0.1f)
+            {
+                moveCameraCloser = false; // Stop moving closer
             }
         }
     }

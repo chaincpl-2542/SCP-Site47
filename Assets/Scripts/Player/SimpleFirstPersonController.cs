@@ -11,6 +11,15 @@ public class SimpleFirstPersonController : MonoBehaviour
 
     private float xRotation = 0f; // Keep track of vertical camera rotation
 
+    public float gravity = -9.81f;  // Gravity force
+    public float groundCheckDistance = 0.4f;  // Distance to check if player is grounded
+    public LayerMask groundMask;  // Define which layers are considered "ground"
+
+    private Vector3 velocity;  // Velocity of the player (including gravity)
+    private bool isGrounded;  // To check if the player is grounded
+
+    public Transform groundCheck; 
+
     public bool disablePlayerControll = false;
 
     private bool smoothLookAtSCP = false; // Whether the camera should smoothly look at the SCP
@@ -46,16 +55,33 @@ public class SimpleFirstPersonController : MonoBehaviour
         {
             MoveCameraCloser();
         }
+        ApplyGravity();
     }
 
     void MovePlayer()
     {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundCheckDistance, groundMask);
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;  // Keep the player "stuck" to the ground (prevents floating)
+        }
+
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
         float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         controller.Move(move * speed * Time.deltaTime);
+    }
+
+    void ApplyGravity()
+    {
+        // Apply gravity to the player's velocity (only on the Y axis)
+        velocity.y += gravity * Time.deltaTime;
+
+        // Move the player using the CharacterController, applying gravity
+        controller.Move(velocity * Time.deltaTime);
     }
 
     void LookAround()

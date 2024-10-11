@@ -26,7 +26,7 @@ public class PCInteractable : MonoBehaviour
             {
                 if (hit.collider != null && hit.collider.gameObject == gameObject)
                 {
-                    ShowCCTVUI();
+                    //ShowCCTVUI();
                 }
             }
         }
