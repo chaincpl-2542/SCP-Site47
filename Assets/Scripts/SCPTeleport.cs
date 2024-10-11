@@ -16,11 +16,9 @@ public class SCPTeleport : MonoBehaviour
     [SerializeField] private float timer;
     [SerializeField] private bool readyToTeleport;
     private GameObject selectedSpawnPoint;
-    private Animator anim;
 
     private void Start()
     {
-        anim = gameObject.GetComponent<Animator>();
         CCTVManager.Instance.changeCamera += TeleportTo;
         RandomRoom();
     }
@@ -77,21 +75,6 @@ public class SCPTeleport : MonoBehaviour
         {
             transform.position = selectedSpawnPoint.transform.position;
             Debug.Log("SCP teleported to: " + selectedSpawnPoint.name);
-            switch (selectedSpawnPoint.name)
-            {
-                case "Spawn01":
-                    anim.SetInteger("State", 0);
-                    break;
-                case "Spawn02":
-                    anim.SetInteger("State", 0);
-                    break;
-                case "Spawn03":
-                    anim.SetInteger("State", 2);
-                    break;
-                case "Spawn04":
-                    anim.SetInteger("State", 3);
-                    break;
-            }
             RandomRoom();
             timer = 0;
         }

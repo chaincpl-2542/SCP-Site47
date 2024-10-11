@@ -10,13 +10,13 @@ public class PCInteractable : MonoBehaviour
 
     public void Start()
     {
-       
+
         cctvUI.SetActive(false);
     }
 
     void Update()
     {
-       
+
         if (!isUIOpen && Input.GetMouseButtonDown(0))
         {
             Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -31,7 +31,7 @@ public class PCInteractable : MonoBehaviour
             }
         }
 
-       
+
         if (isUIOpen && Input.GetKeyDown(KeyCode.Escape))
         {
             CloseCCTVUI();
