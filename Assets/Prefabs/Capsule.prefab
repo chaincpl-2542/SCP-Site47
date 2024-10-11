@@ -235,21 +235,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec88a3af2f2d2414eb6c015eba5d9692, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  headBobFrequency: 2
-  headBobAmplitude: 0.07
+  headBobFrequency: 2.5
+  headBobAmplitude: 0.15
   stamina: 100
   maxStamina: 100
   staminaDrain: 10
   staminaRecovery: 5
-  leanAngle: 15
+  leanAngle: 7
   leanSpeed: 5
+  leanOffset: 0.5
+  leanMovementSpeed: 5
   playerCamera: {fileID: 1730809311696493055}
+  normalFOV: 60
+  sprintFOV: 70
+  fovChangeSpeed: 5
   mouseSensitivity: 100
   walkSpeed: 3
   runSpeed: 5
-  crouchSpeed: 2.5
-  verticalJumpForce: 1
-  directionalJumpForce: 2
+  crouchSpeed: 2
   crouchHeight: 0.5
   controller: {fileID: 6774968043945995704}
   gravity: -9.81

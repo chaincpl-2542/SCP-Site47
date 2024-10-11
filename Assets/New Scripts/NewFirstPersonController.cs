@@ -1,11 +1,11 @@
 using UnityEngine;
+
 namespace Peerawit
 {
-
-    public class NewFirstPersonController : MonoBehaviour
+    public class FirstPersonController : MonoBehaviour
     {
-        public float headBobFrequency = 1.5f;
-        public float headBobAmplitude = 0.05f;
+        public float headBobFrequency = 2.5f;
+        public float headBobAmplitude = 0.15f;
         private float headBobTimer = 0f;
         private Vector3 originalHeadPosition;
 
@@ -20,14 +20,16 @@ namespace Peerawit
         private float currentLean = 0f;
 
         public Camera playerCamera;
+        public float normalFOV = 60f;
+        public float sprintFOV = 75f;
+        public float fovChangeSpeed = 5f;
         public float mouseSensitivity = 100f;
         private float xRotation = 0f;
 
         public float walkSpeed = 5f;
         public float runSpeed = 10f;
         public float crouchSpeed = 2.5f;
-        public float verticalJumpForce = 3f;
-        public float directionalJumpForce = 5f;
+
         public float crouchHeight = 0.5f;
         private float originalHeight;
         public CharacterController controller;
@@ -35,6 +37,7 @@ namespace Peerawit
         private Vector3 velocity;
         public float gravity = -9.81f;
         private bool isGrounded;
+        private bool isCrouching = false;
 
         void Start()
         {
@@ -42,20 +45,17 @@ namespace Peerawit
             controller = GetComponent<CharacterController>();
             originalHeight = controller.height;
             originalHeadPosition = playerCamera.transform.localPosition;
-            Cursor.lockState = CursorLockMode.Locked;
-
-            controller = GetComponent<CharacterController>();
-            originalHeight = controller.height;
         }
 
         void Update()
         {
             HandleMouseLook();
+            HandleFieldOfView();
+            HandleStamina();
             HandleHeadBobbing();
             HandleLeaning();
-            HandleStamina();
-            HandleMouseLook();
 
+            // Movement handling
             isGrounded = controller.isGrounded;
             if (isGrounded && velocity.y < 0)
             {
@@ -64,18 +64,20 @@ namespace Peerawit
 
             float speed = walkSpeed;
 
-            if (Input.GetKey(KeyCode.LeftShift) && isGrounded)
+            if (Input.GetKey(KeyCode.LeftShift) && isGrounded && Input.GetAxis("Vertical") > 0 && stamina > 0)
             {
                 speed = runSpeed;
-            }
-            else if (Input.GetKey(KeyCode.C))
-            {
-                speed = crouchSpeed;
-                controller.height = crouchHeight;
+                isSprinting = true;
             }
             else
             {
-                controller.height = originalHeight;
+                isSprinting = false;
+            }
+
+            if (Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                isCrouching = !isCrouching;
+                controller.height = isCrouching ? crouchHeight : originalHeight;
             }
 
             float x = Input.GetAxis("Horizontal");
@@ -85,20 +87,33 @@ namespace Peerawit
             if (isGrounded)
             {
                 controller.Move(move * speed * Time.deltaTime);
-                velocity.x = 0f;
-                velocity.z = 0f;
-            }
-
-            if (Input.GetButtonDown("Jump") && isGrounded)
-            {
-                float jumpSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
-                Vector3 jumpDirection = transform.forward * jumpSpeed;
-                velocity = jumpDirection * 0.5f; // Reduce the effect for a balanced jump
-                velocity.y = Mathf.Sqrt(verticalJumpForce * -2f * gravity);
             }
 
             velocity.y += gravity * Time.deltaTime;
             controller.Move(velocity * Time.deltaTime);
+        }
+
+        void FixedUpdate()
+        {
+            HandleMomentum(); // Move momentum handling to FixedUpdate
+        }
+
+        void HandleMouseLook()
+        {
+            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
+            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+
+            xRotation -= mouseY;
+            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+            float strafe = Input.GetAxis("Horizontal");
+            float tiltAngle = Mathf.Clamp(-mouseX * 0.5f, -10f, 10f);
+            float strafeTiltAngle = Mathf.Clamp(strafe * 5f, -5f, 5f);
+
+            Quaternion targetRotation = Quaternion.Euler(xRotation, 0f, tiltAngle + strafeTiltAngle + currentLean);
+            playerCamera.transform.localRotation = Quaternion.Slerp(playerCamera.transform.localRotation, targetRotation, Time.deltaTime * 5f);
+
+            transform.Rotate(Vector3.up * mouseX);
         }
 
         void HandleHeadBobbing()
@@ -118,7 +133,7 @@ namespace Peerawit
 
         void HandleStamina()
         {
-            isSprinting = Input.GetKey(KeyCode.LeftShift) && isGrounded && stamina > 0;
+            isSprinting = Input.GetKey(KeyCode.LeftShift) && isGrounded && stamina > 0 && (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") > 0);
             if (isSprinting)
             {
                 stamina -= staminaDrain * Time.deltaTime;
@@ -134,35 +149,36 @@ namespace Peerawit
         void HandleLeaning()
         {
             float targetLeanAngle = 0f;
-            Vector3 targetLeanPosition = Vector3.zero;
+            Vector3 targetLeanPosition = originalHeadPosition;
 
             if (Input.GetKey(KeyCode.Q))
             {
-                targetLeanAngle = -leanAngle;
-                targetLeanPosition = new Vector3(-leanAngle * 0.01f, 0, 0);
+                targetLeanAngle = leanAngle;
+                targetLeanPosition += new Vector3(-0.5f, 0, 0);
             }
             else if (Input.GetKey(KeyCode.E))
             {
-                targetLeanAngle = leanAngle;
-                targetLeanPosition = new Vector3(leanAngle * 0.01f, 0, 0);
+                targetLeanAngle = -leanAngle;
+                targetLeanPosition += new Vector3(0.5f, 0, 0);
             }
 
             currentLean = Mathf.Lerp(currentLean, targetLeanAngle, Time.deltaTime * leanSpeed);
-            playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, originalHeadPosition + targetLeanPosition, Time.deltaTime * leanSpeed);
-            playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, currentLean);
+            playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, targetLeanPosition, Time.deltaTime * leanSpeed);
         }
 
-
-        void HandleMouseLook()
+        void HandleFieldOfView()
         {
-            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-            float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+            float targetFOV = isSprinting ? sprintFOV : normalFOV;
+            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, Time.deltaTime * fovChangeSpeed);
+        }
 
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-
-            playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-            transform.Rotate(Vector3.up * mouseX);
+        void HandleMomentum()
+        {
+            if (isGrounded && velocity.magnitude > 0.1f && Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") == 0)
+            {
+                velocity.x = Mathf.Lerp(velocity.x, 0, Time.fixedDeltaTime * 3f);
+                velocity.z = Mathf.Lerp(velocity.z, 0, Time.fixedDeltaTime * 3f);
+            }
         }
     }
 }
