@@ -481,6 +481,11 @@ PrefabInstance:
       propertyPath: m_BackGroundColor.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2727569043370151429, guid: 4ded717768368304b848e5ee162c2502,
+        type: 3}
+      propertyPath: mouseSensitivity
+      value: 150
+      objectReference: {fileID: 0}
     - target: {fileID: 3125000179555510919, guid: 4ded717768368304b848e5ee162c2502,
         type: 3}
       propertyPath: m_Name

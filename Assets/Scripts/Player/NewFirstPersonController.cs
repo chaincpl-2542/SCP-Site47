@@ -118,13 +118,7 @@ namespace Peerawit
             xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
-            float strafe = Input.GetAxis("Horizontal");
-            float tiltAngle = Mathf.Clamp(-mouseX * 0.5f, -10f, 10f);
-            float strafeTiltAngle = Mathf.Clamp(strafe * 5f, -5f, 5f);
-
-            //Quaternion targetRotation = Quaternion.Euler(xRotation, 0f, tiltAngle + strafeTiltAngle + currentLean);
-            //playerCamera.transform.localRotation = Quaternion.Slerp(playerCamera.transform.localRotation, targetRotation, Time.deltaTime * 5f);
-
+            playerCamera.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
             transform.Rotate(Vector3.up * mouseX);
         }
 
