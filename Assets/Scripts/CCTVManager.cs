@@ -22,6 +22,7 @@ public class CCTVManager : MonoBehaviour
     [SerializeField] CameraRotation[] cameraRotations;
     [SerializeField] AudioSource pickUpCamSound, changeModeSound, switchCamSound;
     BatteryController batteryController;
+    public bool isDisableTablet = false;
 
     
     private void Awake() 
@@ -48,57 +49,60 @@ public class CCTVManager : MonoBehaviour
     
     void Update()
     {
-        if (isTablet)
+        if(!isDisableTablet)
         {
-            if (currentCameraIndex >= 0)
+            if (isTablet)
             {
-                if (Input.GetKeyDown(KeyCode.Q))
+                if (currentCameraIndex >= 0)
                 {
-                    SwitchToNextCamera(-1);
-                    switchCamSound.Play();
-                }
-                else if (Input.GetKeyDown(KeyCode.E))
-                {
-                    SwitchToNextCamera(1);
-                    switchCamSound.Play();
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                ReturnToMainCamera();
-                ReturnMainScreen();
-                changeModeSound.Play();
-            }
-
-
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                ActivateCCTV();
-                changeModeSound.Play();
-            }
-
-            if (isTablet || isCCTVMode)
-            {
-                if (Input.GetKeyDown(KeyCode.X))
-                {
-                    if (currentCameraIndex == -1)
+                    if (Input.GetKeyDown(KeyCode.Q))
                     {
-                        ToggleNightVisionCamera();
-                        changeModeSound.Play();
+                        SwitchToNextCamera(-1);
+                        switchCamSound.Play();
                     }
-                    else
+                    else if (Input.GetKeyDown(KeyCode.E))
                     {
-                        ToggleNightVisionCCTV();
-                        changeModeSound.Play();
+                        SwitchToNextCamera(1);
+                        switchCamSound.Play();
                     }
                 }
-            }
-        }
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            ActiveTablet();
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    ReturnToMainCamera();
+                    ReturnMainScreen();
+                    changeModeSound.Play();
+                }
+
+
+                if (Input.GetKeyDown(KeyCode.V))
+                {
+                    ActivateCCTV();
+                    changeModeSound.Play();
+                }
+
+                if (isTablet || isCCTVMode)
+                {
+                    if (Input.GetKeyDown(KeyCode.X))
+                    {
+                        if (currentCameraIndex == -1)
+                        {
+                            ToggleNightVisionCamera();
+                            changeModeSound.Play();
+                        }
+                        else
+                        {
+                            ToggleNightVisionCCTV();
+                            changeModeSound.Play();
+                        }
+                    }
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                ActiveTablet();
+            }
         }
     }
 

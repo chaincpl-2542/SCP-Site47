@@ -145,6 +145,7 @@ public class SCPController : MonoBehaviour
         Debug.Log("SCP has caught the player!");
 
         GameManager.Instance.RestartGame();
+        CCTVManager.Instance.isDisableTablet = true;
     }
 
     void LookAtPlayer()

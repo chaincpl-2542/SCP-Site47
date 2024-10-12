@@ -40,7 +40,7 @@ public class SimpleFirstPersonController : MonoBehaviour
 
     void Update()
     {
-        if (!disablePlayerControll)
+        if (!disablePlayerControll && !CCTVManager.Instance.isCCTVMode)
         {
             MovePlayer();
             LookAround();
