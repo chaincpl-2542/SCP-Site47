@@ -12,7 +12,7 @@ public class CCTVButtonHandler : MonoBehaviour
     void Update()
     {
         
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             CloseAllUI();
             mainScreenUI.SetActive(true);
