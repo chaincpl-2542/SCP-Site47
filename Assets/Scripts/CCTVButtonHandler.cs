@@ -8,22 +8,18 @@ public class CCTVButtonHandler : MonoBehaviour
     public CCTVManager cctvManager;
     public GameObject cctvUI;
     public GameObject mainScreenUI, cameraScreenUI, CCTVScreenUI;
+    BatteryController batteryController;
 
-    void Update()
+    public void OpenMainScreen()
     {
-        
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            CloseAllUI();
-            mainScreenUI.SetActive(true);
-        }
+        CloseAllUI();
+        mainScreenUI.SetActive(true);
+    }
 
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            CloseAllUI();
-            CCTVScreenUI.SetActive(true);
-        }
-
+    public void OpenCCTVScreen()
+    {
+        CloseAllUI();
+        CCTVScreenUI.SetActive(true);
     }
 
     public void CloseAllUI()
@@ -43,8 +39,5 @@ public class CCTVButtonHandler : MonoBehaviour
 
         
         cctvManager.SwitchToCamera(cameraIndex);
-
-        
-        //cctvUI.SetActive(false);
     }
 }
