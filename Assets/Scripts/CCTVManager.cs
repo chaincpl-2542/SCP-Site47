@@ -22,7 +22,8 @@ public class CCTVManager : MonoBehaviour
     [SerializeField] CameraRotation[] cameraRotations;
     [SerializeField] AudioSource pickUpCamSound, changeModeSound, switchCamSound;
     BatteryController batteryController;
-    public bool isDisableTablet = false;
+    CCTVButtonHandler cctvButtonHandler;
+    ChargeStation chargeStation;
 
     
     private void Awake() 
@@ -30,7 +31,6 @@ public class CCTVManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -45,13 +45,21 @@ public class CCTVManager : MonoBehaviour
         mainCamera.gameObject.SetActive(true);
         mainCamera.enabled = true;
         cameraRotations[0].enabled = true;
+        chargeStation = FindObjectOfType<ChargeStation>();
+        PlayerPrefs.SetFloat("Battery", 100f);
     }
     
     void Update()
     {
-        if(!isDisableTablet)
+        if (isTablet)
         {
-            if (isTablet)
+            if (PlayerPrefs.GetFloat("Battery")<=0)
+            {
+                CloseAllScreen();
+                cctvButtonHandler = GetComponent<CCTVButtonHandler>();
+                cctvButtonHandler.CloseAllUI();
+            }
+            else
             {
                 if (currentCameraIndex >= 0)
                 {
@@ -79,6 +87,8 @@ public class CCTVManager : MonoBehaviour
                 {
                     ActivateCCTV();
                     changeModeSound.Play();
+                    cctvButtonHandler = GetComponent<CCTVButtonHandler>();
+                    cctvButtonHandler.OpenCCTVScreen();
                 }
 
                 if (isTablet || isCCTVMode)
@@ -98,11 +108,22 @@ public class CCTVManager : MonoBehaviour
                     }
                 }
             }
+            
+        }
 
+        if (!chargeStation.IsAnyCharging())
+        {
             if (Input.GetKeyDown(KeyCode.T))
             {
                 ActiveTablet();
+                cctvButtonHandler = GetComponent<CCTVButtonHandler>();
+                cctvButtonHandler.OpenMainScreen();
             }
+        }
+
+        if (chargeStation.IsAnyCharging())
+        {
+            DisActiveTablet();
         }
     }
 
@@ -114,6 +135,9 @@ public class CCTVManager : MonoBehaviour
                 isTablet = true;
                 isCameraMode = true;
                 currentCameraIndex = -1;
+                CloseAllScreen();
+                ReturnToMainCamera();
+                ReturnMainScreen();
             }
             else
             {
@@ -123,6 +147,14 @@ public class CCTVManager : MonoBehaviour
                 currentCameraIndex = -1;
             }
             pickUpCamSound.Play();
+    }
+
+    public void DisActiveTablet()
+    {
+        tabletSCP.SetActive(false);
+        isTablet = false;
+        isCameraMode = false;
+        currentCameraIndex = -1;
     }
 
     public void ActivateCCTV()
@@ -242,18 +274,20 @@ public class CCTVManager : MonoBehaviour
     public void SwitchToNextCamera(int direction)
     {
         screenCCTV[currentCameraIndex].gameObject.SetActive(false);
-        //cctvCameras[currentCameraIndex].gameObject.SetActive(false);
 
         currentCameraIndex = (currentCameraIndex + direction + screenCCTV.Length) % screenCCTV.Length;
 
-        //cctvCameras[currentCameraIndex].gameObject.SetActive(true);
         screenCCTV[currentCameraIndex].gameObject.SetActive(true);
 
-        cameraRotations[currentCameraIndex+1].enabled = true;
+        cameraRotations[currentCameraIndex].enabled = true;
 
         isNightMode = false;
         batteryController = FindObjectOfType<BatteryController>();
         batteryController.ToggleNightMode(isNightMode);
+        foreach(GameObject screenNight in nightVisionCCTV)
+        {
+            screenNight.SetActive(false);
+        }
     }
 
     public void ReturnToMainCamera()
