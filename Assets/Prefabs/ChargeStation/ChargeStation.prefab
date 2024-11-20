@@ -1654,7 +1654,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tabletOnCharge: {fileID: 6796065263028751227}
   isCharging: 0
+  isPower: 0
   batteryText: {fileID: 7052324573371196074}
+  powerIcon:
+  - {fileID: 3934890684153855265}
+  - {fileID: 2163081524839602153}
 --- !u!65 &2441807946082882411
 BoxCollider:
   m_ObjectHideFlags: 0

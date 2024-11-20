@@ -1271,8 +1271,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  SCP_State: 0
   agent: {fileID: 7419544412233181721}
-  agentSpeed: 5
+  agentSpeed: 4
   agentAcceleration: 1000
   detectionRange: 20
   attackRange: 1.5
@@ -1281,7 +1282,7 @@ MonoBehaviour:
   scpHead: {fileID: 4467521557011212179}
   obstructionMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 2048
   animator: {fileID: 2757411538978541915}
   scpModel: {fileID: 481229415559521245}
   invisibleDuration: 0.8
@@ -1289,6 +1290,7 @@ MonoBehaviour:
   maxVisibleTime: 0.3
   isVisible: 0
   simpleFirstPersonController: {fileID: 0}
+  forcePlayer: 0
 --- !u!195 &7419544412233181721
 NavMeshAgent:
   m_ObjectHideFlags: 0

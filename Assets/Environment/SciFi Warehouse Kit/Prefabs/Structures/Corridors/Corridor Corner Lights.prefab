@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3943313845378779556}
   - component: {fileID: 1176086434440299635}
   - component: {fileID: 8322432305290224522}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: WallCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -130,7 +130,8 @@ GameObject:
   - component: {fileID: 7220986072346051313}
   - component: {fileID: 7220986072343151315}
   - component: {fileID: 7220986072344281107}
-  m_Layer: 0
+  - component: {fileID: 3839211641985380682}
+  m_Layer: 11
   m_Name: Tunnel Ceiling001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -202,6 +203,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3839211641985380682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7220986072346222289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1 &7220986072346222291
 GameObject:
   m_ObjectHideFlags: 0
@@ -213,7 +233,7 @@ GameObject:
   - component: {fileID: 7220986072346051315}
   - component: {fileID: 7220986072343151317}
   - component: {fileID: 7220986072344281109}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Tunnel Beams001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,7 +316,7 @@ GameObject:
   - component: {fileID: 7220986072346051317}
   - component: {fileID: 7220986072343151319}
   - component: {fileID: 7220986072344281111}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Light001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -377,7 +397,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7220986072346051319}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Corridor Corner Lights
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -417,7 +437,7 @@ GameObject:
   - component: {fileID: 7220986072346051323}
   - component: {fileID: 7220986072343151325}
   - component: {fileID: 7220986072344281117}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Tunnel Walls001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -500,7 +520,7 @@ GameObject:
   - component: {fileID: 7220986072346051325}
   - component: {fileID: 7220986072343151327}
   - component: {fileID: 7220986072344281119}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Tunnel Piipes001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -585,7 +605,7 @@ GameObject:
   - component: {fileID: 7220986072343151313}
   - component: {fileID: 7220986072344281105}
   - component: {fileID: 2551238383315008043}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Tunnel Floor001
   m_TagString: Untagged
   m_Icon: {fileID: 0}

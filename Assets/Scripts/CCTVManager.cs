@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CCTVManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class CCTVManager : MonoBehaviour
     public GameObject screenVision;
     public GameObject nightVisionCamera;
     public GameObject[] nightVisionCCTV;
+    public bool isDisableTablet = false;
     [SerializeField] private int currentCameraIndex = -1;
     public bool isNightMode = false, isCameraMode = false, isCCTVMode = false, isTablet = false;
     [SerializeField] GameObject playerPostprocessing;
@@ -23,9 +25,10 @@ public class CCTVManager : MonoBehaviour
     [SerializeField] AudioSource pickUpCamSound, changeModeSound, switchCamSound;
     BatteryController batteryController;
     CCTVButtonHandler cctvButtonHandler;
-    ChargeStation chargeStation;
+    public ChargeStation chargeStation;
+    [SerializeField] private TextMeshProUGUI assessText;
+    [SerializeField] private int assessLevel = 1;
 
-    
     private void Awake() 
     {
         if (Instance == null)
@@ -106,7 +109,12 @@ public class CCTVManager : MonoBehaviour
                             changeModeSound.Play();
                         }
                     }
-                }
+                } 
+            }
+
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                UpGradeAssessLevel();
             }
             
         }
@@ -130,23 +138,23 @@ public class CCTVManager : MonoBehaviour
     public void ActiveTablet()
     {
         if (!isTablet)
-            {
-                tabletSCP.SetActive(true);
-                isTablet = true;
-                isCameraMode = true;
-                currentCameraIndex = -1;
-                CloseAllScreen();
-                ReturnToMainCamera();
-                ReturnMainScreen();
-            }
-            else
-            {
-                tabletSCP.SetActive(false);
-                isTablet = false;
-                isCameraMode = false;
-                currentCameraIndex = -1;
-            }
-            pickUpCamSound.Play();
+        {
+            tabletSCP.SetActive(true);
+            isTablet = true;
+            isCameraMode = true;
+            currentCameraIndex = -1;
+            CloseAllScreen();
+            ReturnToMainCamera();
+            ReturnMainScreen();
+        }
+        else
+        {
+            tabletSCP.SetActive(false);
+            isTablet = false;
+            isCameraMode = false;
+            currentCameraIndex = -1;
+        }
+        pickUpCamSound.Play();
     }
 
     public void DisActiveTablet()
@@ -261,7 +269,6 @@ public class CCTVManager : MonoBehaviour
                 cctvCameras[currentCameraIndex].gameObject.SetActive(false);
             }
 
-            
             currentCameraIndex = cameraIndex;
             cctvCameras[currentCameraIndex].gameObject.SetActive(true);
 
@@ -301,6 +308,12 @@ public class CCTVManager : MonoBehaviour
         mainCamera.enabled=true;
         cctvPostprocessing.SetActive(false);
         playerPostprocessing.SetActive(true);
+    }
+
+    public void UpGradeAssessLevel()
+    {
+        assessLevel++;
+        assessText.text = "Assess Level : " + assessLevel;
     }
 
 }

@@ -33,6 +33,7 @@ public class SCPController : MonoBehaviour
     private bool isCatchPlayer = false;
 
     public SimpleFirstPersonController simpleFirstPersonController; // Reference to the player's movement script
+    public bool forcePlayer;
 
     #endregion
 
@@ -210,19 +211,26 @@ public class SCPController : MonoBehaviour
 
     bool IsPlayerInSight()
     {
-        Vector3 directionToPlayer = (player.position - scpHead.position).normalized;
-        float angleBetweenSCPAndPlayer = Vector3.Angle(scpHead.forward, directionToPlayer);
-        if (angleBetweenSCPAndPlayer < fieldOfViewAngle / 2f)
+        if(forcePlayer)
         {
-            float distanceToPlayer = Vector3.Distance(scpHead.position, player.position);
-            if (!Physics.Raycast(scpHead.position, directionToPlayer, distanceToPlayer, obstructionMask))
+            return true;
+        }
+        else if(Vector3.Distance(player.position, scpHead.position) < 15)
+        {
+            Vector3 directionToPlayer = (player.position - scpHead.position).normalized;
+            float angleBetweenSCPAndPlayer = Vector3.Angle(scpHead.forward, directionToPlayer);
+            if (angleBetweenSCPAndPlayer < fieldOfViewAngle / 2f)
             {
-                Debug.DrawRay(scpHead.position, directionToPlayer * distanceToPlayer, Color.green);
-                return true;
-            }
-            else
-            {
-                Debug.DrawRay(scpHead.position, directionToPlayer * distanceToPlayer, Color.red);
+                float distanceToPlayer = Vector3.Distance(scpHead.position, player.position);
+                if (!Physics.Raycast(scpHead.position, directionToPlayer, distanceToPlayer, obstructionMask))
+                {
+                    Debug.DrawRay(scpHead.position, directionToPlayer * distanceToPlayer, Color.green);
+                    return true;
+                }
+                else
+                {
+                    Debug.DrawRay(scpHead.position, directionToPlayer * distanceToPlayer, Color.red);
+                }
             }
         }
         return false;

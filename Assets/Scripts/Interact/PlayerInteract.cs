@@ -6,12 +6,24 @@ public class PlayerInteract : MonoBehaviour
 {
     public float interactRange = 2f;
     public LayerMask interactableLayer;
+    public GameObject interactButton;
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.E))
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit, interactRange, interactableLayer))
         {
-            InteractWithObject();
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                InteractWithObject();
+            }
+            
+            interactButton.SetActive(true);
+        }
+        else
+        {
+            interactButton.SetActive(false);
         }
     }
 
@@ -20,6 +32,7 @@ public class PlayerInteract : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.forward, out hit, interactRange, interactableLayer))
         {
+            Debug.Log(hit.transform.name);
             IInteractable interactable = hit.collider.GetComponent<IInteractable>();
             if (interactable != null)
             {
