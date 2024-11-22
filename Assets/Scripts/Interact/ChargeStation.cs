@@ -13,6 +13,7 @@ public class ChargeStation : MonoBehaviour, IInteractable
     private float currentChargeRate = 10;
     private int showBattery;
     private static List<ChargeStation> chargeStations = new List<ChargeStation>();
+    public AudioSource audioSource;
 
     private void Awake()
     {
@@ -40,6 +41,11 @@ public class ChargeStation : MonoBehaviour, IInteractable
 
     public void OnInteract()
     {
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
+
         EventControl.Instance.gotTablet = true;
         if (!IsAnyCharging())
         {

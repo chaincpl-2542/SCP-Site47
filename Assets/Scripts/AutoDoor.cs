@@ -6,6 +6,7 @@ public class AutoDoor : MonoBehaviour
 {
     Animator anim;
     public bool canOpen = true;
+    public AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,7 +15,12 @@ public class AutoDoor : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(canOpen)
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
+
+        if (canOpen)
         {
             if(other.gameObject.name == "Player")
             {
@@ -25,7 +31,12 @@ public class AutoDoor : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if(other.gameObject.name == "Player")
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
+
+        if (other.gameObject.name == "Player")
         {
             anim.CrossFade("DoorClose",0);
         }

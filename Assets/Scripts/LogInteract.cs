@@ -11,9 +11,15 @@ public class LogInteract : MonoBehaviour, IInteractable
     
 }
     public LogType logType;
+    public AudioSource audioSource;
 
     public void OnInteract()
     {
+        if (audioSource != null)
+        {
+            audioSource.Play();
+        }
+
         LogManager.Instance.ShowLog(logType);
     }
 }
