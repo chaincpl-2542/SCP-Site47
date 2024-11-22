@@ -5,6 +5,7 @@ using UnityEngine;
 public class AutoDoor : MonoBehaviour
 {
     Animator anim;
+    public bool canOpen = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,9 +14,12 @@ public class AutoDoor : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name == "Player")
+        if(canOpen)
         {
-            anim.CrossFade("DoorOpen",0);
+            if(other.gameObject.name == "Player")
+            {
+                anim.CrossFade("DoorOpen",0);
+            }
         }
     }
 

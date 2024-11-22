@@ -6,10 +6,15 @@ using UnityEngine.AI;
 public class EventControl : MonoBehaviour
 {
     public static EventControl Instance;
+    
     public bool isGeneratorRoom;
     public bool isDataRoom;
     public bool isControlRoom;
     public Transform scp;
+
+    [Header("Event0")]
+    public bool gotTablet;
+    public AutoDoor startRoomDoor;
 
     [Header("Event1")]
     public Animator door01Anim;
@@ -23,6 +28,17 @@ public class EventControl : MonoBehaviour
     public GameObject showDoor2;
     public GameObject hideDoor2;
     public GameObject exitWay;
+    
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
 
     public void ActiveEvent1()
     {
@@ -67,5 +83,13 @@ public class EventControl : MonoBehaviour
     public void ScpForcePlayer()
     {
         scp.GetComponent<SCPController>().forcePlayer = true;
+    }
+
+    void Update()
+    {
+        if(gotTablet)
+        {
+            startRoomDoor.canOpen = true;
+        }
     }
 }

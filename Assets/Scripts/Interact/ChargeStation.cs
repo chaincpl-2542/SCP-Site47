@@ -40,6 +40,7 @@ public class ChargeStation : MonoBehaviour, IInteractable
 
     public void OnInteract()
     {
+        EventControl.Instance.gotTablet = true;
         if (!IsAnyCharging())
         {
             tabletOnCharge.SetActive(true);

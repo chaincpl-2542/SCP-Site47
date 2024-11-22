@@ -64,34 +64,14 @@ public class CCTVManager : MonoBehaviour
             }
             else
             {
-                if (currentCameraIndex >= 0)
-                {
-                    if (Input.GetKeyDown(KeyCode.Q))
-                    {
-                        SwitchToNextCamera(-1);
-                        switchCamSound.Play();
-                    }
-                    else if (Input.GetKeyDown(KeyCode.E))
-                    {
-                        SwitchToNextCamera(1);
-                        switchCamSound.Play();
-                    }
-                }
-
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     ReturnToMainCamera();
                     ReturnMainScreen();
-                    changeModeSound.Play();
-                }
 
-
-                if (Input.GetKeyDown(KeyCode.V))
-                {
-                    ActivateCCTV();
-                    changeModeSound.Play();
+                    ActiveTablet();
                     cctvButtonHandler = GetComponent<CCTVButtonHandler>();
-                    cctvButtonHandler.OpenCCTVScreen();
+                    cctvButtonHandler.OpenMainScreen();
                 }
 
                 if (isTablet || isCCTVMode)

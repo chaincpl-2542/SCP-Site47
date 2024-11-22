@@ -8,10 +8,13 @@ public class EventDoorTrigger : MonoBehaviour
     public Animator doorAnim;
     void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.name == "Player")
+        if(eventControl.isGeneratorRoom && eventControl.isControlRoom)
         {
-            doorAnim.CrossFade("DoorStuck",0);
-            eventControl.ActiveEvent3();
+            if(other.gameObject.name == "Player")
+            {
+                doorAnim.CrossFade("DoorStuck",0);
+                eventControl.ActiveEvent3();
+            }
         }
     }
 }
