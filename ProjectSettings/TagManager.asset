@@ -15,9 +15,9 @@ TagManager:
   - NightVision
   - Taplet
   - Ground
-  - 
-  - 
-  - 
+  - Interactable
+  - Obstruction
+  - MainCamera
   - 
   - 
   - 

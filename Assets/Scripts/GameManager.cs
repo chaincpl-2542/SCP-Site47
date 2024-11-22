@@ -18,20 +18,25 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void RestartGame()
     {
-        StartCoroutine(DelayLoadscene());
+        StartCoroutine(DelayLoadscene(1,3));
     }
 
-    public IEnumerator DelayLoadscene()
+    public IEnumerator DelayLoadscene(int num,float delay)
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(num);
+    }
+
+    public void EndGame()
+    {
+        StartCoroutine(DelayLoadscene(0,0));
+    }
+
+    public void StartGame()
+    {
         SceneManager.LoadScene(0);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class CCTVManager : MonoBehaviour
@@ -15,6 +16,7 @@ public class CCTVManager : MonoBehaviour
     public GameObject screenVision;
     public GameObject nightVisionCamera;
     public GameObject[] nightVisionCCTV;
+    public bool isDisableTablet = false;
     [SerializeField] private int currentCameraIndex = -1;
     public bool isNightMode = false, isCameraMode = false, isCCTVMode = false, isTablet = false;
     [SerializeField] GameObject playerPostprocessing;
@@ -22,15 +24,16 @@ public class CCTVManager : MonoBehaviour
     [SerializeField] CameraRotation[] cameraRotations;
     [SerializeField] AudioSource pickUpCamSound, changeModeSound, switchCamSound;
     BatteryController batteryController;
-    public bool isDisableTablet = false;
+    CCTVButtonHandler cctvButtonHandler;
+    public ChargeStation chargeStation;
+    [SerializeField] private TextMeshProUGUI assessText;
+    [SerializeField] private int assessLevel = 1;
 
-    
     private void Awake() 
     {
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -45,40 +48,30 @@ public class CCTVManager : MonoBehaviour
         mainCamera.gameObject.SetActive(true);
         mainCamera.enabled = true;
         cameraRotations[0].enabled = true;
+        chargeStation = FindObjectOfType<ChargeStation>();
+        PlayerPrefs.SetFloat("Battery", 100f);
     }
     
     void Update()
     {
-        if(!isDisableTablet)
+        if (isTablet)
         {
-            if (isTablet)
+            if (PlayerPrefs.GetFloat("Battery")<=0)
             {
-                if (currentCameraIndex >= 0)
-                {
-                    if (Input.GetKeyDown(KeyCode.Q))
-                    {
-                        SwitchToNextCamera(-1);
-                        switchCamSound.Play();
-                    }
-                    else if (Input.GetKeyDown(KeyCode.E))
-                    {
-                        SwitchToNextCamera(1);
-                        switchCamSound.Play();
-                    }
-                }
-
+                CloseAllScreen();
+                cctvButtonHandler = GetComponent<CCTVButtonHandler>();
+                cctvButtonHandler.CloseAllUI();
+            }
+            else
+            {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     ReturnToMainCamera();
                     ReturnMainScreen();
-                    changeModeSound.Play();
-                }
 
-
-                if (Input.GetKeyDown(KeyCode.V))
-                {
-                    ActivateCCTV();
-                    changeModeSound.Play();
+                    ActiveTablet();
+                    cctvButtonHandler = GetComponent<CCTVButtonHandler>();
+                    cctvButtonHandler.OpenMainScreen();
                 }
 
                 if (isTablet || isCCTVMode)
@@ -96,33 +89,60 @@ public class CCTVManager : MonoBehaviour
                             changeModeSound.Play();
                         }
                     }
-                }
+                } 
             }
 
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                UpGradeAssessLevel();
+            }
+            
+        }
+
+        if (!chargeStation.IsAnyCharging())
+        {
             if (Input.GetKeyDown(KeyCode.T))
             {
                 ActiveTablet();
+                cctvButtonHandler = GetComponent<CCTVButtonHandler>();
+                cctvButtonHandler.OpenMainScreen();
             }
+        }
+
+        if (chargeStation.IsAnyCharging())
+        {
+            DisActiveTablet();
         }
     }
 
     public void ActiveTablet()
     {
         if (!isTablet)
-            {
-                tabletSCP.SetActive(true);
-                isTablet = true;
-                isCameraMode = true;
-                currentCameraIndex = -1;
-            }
-            else
-            {
-                tabletSCP.SetActive(false);
-                isTablet = false;
-                isCameraMode = false;
-                currentCameraIndex = -1;
-            }
-            pickUpCamSound.Play();
+        {
+            tabletSCP.SetActive(true);
+            isTablet = true;
+            isCameraMode = true;
+            currentCameraIndex = -1;
+            CloseAllScreen();
+            ReturnToMainCamera();
+            ReturnMainScreen();
+        }
+        else
+        {
+            tabletSCP.SetActive(false);
+            isTablet = false;
+            isCameraMode = false;
+            currentCameraIndex = -1;
+        }
+        pickUpCamSound.Play();
+    }
+
+    public void DisActiveTablet()
+    {
+        tabletSCP.SetActive(false);
+        isTablet = false;
+        isCameraMode = false;
+        currentCameraIndex = -1;
     }
 
     public void ActivateCCTV()
@@ -229,7 +249,6 @@ public class CCTVManager : MonoBehaviour
                 cctvCameras[currentCameraIndex].gameObject.SetActive(false);
             }
 
-            
             currentCameraIndex = cameraIndex;
             cctvCameras[currentCameraIndex].gameObject.SetActive(true);
 
@@ -242,18 +261,20 @@ public class CCTVManager : MonoBehaviour
     public void SwitchToNextCamera(int direction)
     {
         screenCCTV[currentCameraIndex].gameObject.SetActive(false);
-        //cctvCameras[currentCameraIndex].gameObject.SetActive(false);
 
         currentCameraIndex = (currentCameraIndex + direction + screenCCTV.Length) % screenCCTV.Length;
 
-        //cctvCameras[currentCameraIndex].gameObject.SetActive(true);
         screenCCTV[currentCameraIndex].gameObject.SetActive(true);
 
-        cameraRotations[currentCameraIndex+1].enabled = true;
+        cameraRotations[currentCameraIndex].enabled = true;
 
         isNightMode = false;
         batteryController = FindObjectOfType<BatteryController>();
         batteryController.ToggleNightMode(isNightMode);
+        foreach(GameObject screenNight in nightVisionCCTV)
+        {
+            screenNight.SetActive(false);
+        }
     }
 
     public void ReturnToMainCamera()
@@ -267,6 +288,12 @@ public class CCTVManager : MonoBehaviour
         mainCamera.enabled=true;
         cctvPostprocessing.SetActive(false);
         playerPostprocessing.SetActive(true);
+    }
+
+    public void UpGradeAssessLevel()
+    {
+        assessLevel++;
+        assessText.text = "Assess Level : " + assessLevel;
     }
 
 }
