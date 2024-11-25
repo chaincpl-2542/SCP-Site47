@@ -200,7 +200,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3265788095970924202}
   - component: {fileID: 3507169556836888043}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: LogFile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -237,6 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   logType: 0
+  audioSource: {fileID: 0}
 --- !u!1 &8478602179116705694
 GameObject:
   m_ObjectHideFlags: 0

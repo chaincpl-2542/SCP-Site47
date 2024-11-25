@@ -64,9 +64,9 @@ public class EventControl : MonoBehaviour
 
     public void SpawnSCP(Transform spawnPosition,bool isForcePlayer)
     {
+        StartCoroutine(scp.GetComponent<SCPController>().BlinkRandomly());
         scp.transform.position = spawnPosition.position;
         scp.transform.rotation = spawnPosition.rotation;
-
 
         if(isForcePlayer)
         {
@@ -90,6 +90,15 @@ public class EventControl : MonoBehaviour
         if(gotTablet)
         {
             startRoomDoor.canOpen = true;
+        }
+
+        if(Input.GetKeyDown(KeyCode.O))
+        {
+            HideSCP();
+        }
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            SpawnSCP(scp.transform,false);
         }
     }
 }

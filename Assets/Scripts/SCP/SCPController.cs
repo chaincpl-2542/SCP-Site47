@@ -179,7 +179,7 @@ public class SCPController : MonoBehaviour
 
     #region Blinking Logic
 
-    IEnumerator BlinkRandomly()
+    public IEnumerator BlinkRandomly()
     {
         while (true)
         {

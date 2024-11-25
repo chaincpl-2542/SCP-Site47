@@ -6,11 +6,21 @@ public class ScpTrigger : MonoBehaviour
 {
     public EventControl eventControl;
     public Transform scp_position;
+    public bool isHideScp;
     void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.name == "Player")
         {
-            eventControl.SpawnSCP(scp_position, true);
+            if(!isHideScp)
+            {
+                eventControl.SpawnSCP(scp_position, true);
+            }
+            else
+            {
+                eventControl.SpawnSCP(scp_position, false);
+            }
         }
     }
+
+
 }
