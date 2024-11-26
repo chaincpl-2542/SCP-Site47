@@ -475,8 +475,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38b089ad79f8f8f4785701b992bd56fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canOpen: 0
+  doorAnim: {fileID: 3864413407623027494}
+  lightAnim: {fileID: 0}
   audioSource: {fileID: 1740241467761520788}
+  canOpen: 0
+  isPlayer: 0
 --- !u!65 &1741535025003244446
 BoxCollider:
   m_ObjectHideFlags: 0

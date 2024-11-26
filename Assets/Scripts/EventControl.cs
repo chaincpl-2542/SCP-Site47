@@ -6,7 +6,6 @@ using UnityEngine.AI;
 public class EventControl : MonoBehaviour
 {
     public static EventControl Instance;
-    
     public bool isGeneratorRoom;
     public bool isDataRoom;
     public bool isControlRoom;
@@ -89,7 +88,7 @@ public class EventControl : MonoBehaviour
     {
         if(gotTablet)
         {
-            startRoomDoor.canOpen = true;
+            startRoomDoor.DoorStatus(true);
         }
 
         if(Input.GetKeyDown(KeyCode.O))
