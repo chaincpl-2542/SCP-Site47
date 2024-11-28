@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[System.Serializable]
+public class EventDoor
+{
+    public List<AutoDoor> activeDoorsEvent;
+    public List<AutoDoor> deactivateDoorsEvent;
+}
+
 public class EventControl : MonoBehaviour
 {
     public static EventControl Instance;
@@ -13,19 +20,11 @@ public class EventControl : MonoBehaviour
 
     [Header("Event0")]
     public bool gotTablet;
-    public AutoDoor startRoomDoor;
 
-    [Header("Event1")]
-    public Animator door01Anim;
+    [Header("EventMain")]
+     [SerializeField] private List<EventDoor> eventDoors;
 
-    [Header("Event2")]
-    public GameObject showDoor;
-    public GameObject hideDoor;
     public GameObject SCP_EventTrigger;
-
-    [Header("Event3")]
-    public GameObject showDoor2;
-    public GameObject hideDoor2;
     public GameObject exitWay;
     
     void Awake()
@@ -39,26 +38,25 @@ public class EventControl : MonoBehaviour
         Instance = this;
     }
 
-    public void ActiveEvent1()
+    public void ActiveEvent(int eventIndex)
     {
-        if(isGeneratorRoom)
+        var index = eventIndex;
+
+        foreach(AutoDoor door in eventDoors[index].activeDoorsEvent)
         {
-            door01Anim.CrossFade("DoorOpen",0);
+            door.DoorStatus(true);
         }
+
+        foreach(AutoDoor door in eventDoors[index].deactivateDoorsEvent)
+        {
+            door.DoorStatus(false);
+        }
+        
     }
 
-    public void ActiveEvent2()
+    public void ActiveScpTrigger()
     {
-        showDoor.SetActive(true);
-        hideDoor.SetActive(false);
         SCP_EventTrigger.SetActive(true);
-    }
-
-    public void ActiveEvent3()
-    {
-        showDoor2.SetActive(true);
-        hideDoor2.SetActive(false);
-        exitWay.SetActive(true);
     }
 
     public void SpawnSCP(Transform spawnPosition,bool isForcePlayer)
@@ -88,7 +86,7 @@ public class EventControl : MonoBehaviour
     {
         if(gotTablet)
         {
-            startRoomDoor.DoorStatus(true);
+            ActiveEvent(0);
         }
 
         if(Input.GetKeyDown(KeyCode.O))

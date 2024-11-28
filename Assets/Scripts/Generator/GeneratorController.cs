@@ -15,7 +15,7 @@ public class GeneratorController : MonoBehaviour
         isActive = true;
         eventControl.isGeneratorRoom = true;
         StartCoroutine( ActiveObjects());
-        eventControl.ActiveEvent1();
+        eventControl.ActiveEvent(1);
     }
 
     public IEnumerator ActiveObjects()

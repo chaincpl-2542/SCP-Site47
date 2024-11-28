@@ -17,7 +17,7 @@ public class ScpTrigger : MonoBehaviour
             }
             else
             {
-                eventControl.SpawnSCP(scp_position, false);
+                eventControl.HideSCP();
             }
         }
     }

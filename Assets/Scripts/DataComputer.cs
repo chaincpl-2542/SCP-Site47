@@ -39,7 +39,8 @@ public class DataComputer : MonoBehaviour, IInteractable
             screenList[i].SetActive(false);
         }
         eventControl.isDataRoom = true;
-        eventControl.ActiveEvent2();
+        eventControl.ActiveEvent(2);
+        EventControl.Instance.ActiveScpTrigger();
     }
 
      public void OnInteract()

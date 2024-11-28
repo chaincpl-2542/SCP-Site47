@@ -13,7 +13,7 @@ public class EventDoorTrigger : MonoBehaviour
             if(other.gameObject.name == "Player")
             {
                 doorAnim.CrossFade("DoorStuck",0);
-                eventControl.ActiveEvent3();
+                eventControl.ActiveEvent(3);
             }
         }
     }
