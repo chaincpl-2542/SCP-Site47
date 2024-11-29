@@ -6,6 +6,9 @@ public class SCPController : MonoBehaviour
 {
     #region Variables
 
+    private const float MIN_EFFECT_RANGE = 2f;
+    private const float MAX_EFFECT_RANGE = 8f;
+    
     public Transform player;
     public SCPState SCP_State;
     public NavMeshAgent agent;
@@ -35,6 +38,8 @@ public class SCPController : MonoBehaviour
     public SimpleFirstPersonController simpleFirstPersonController; // Reference to the player's movement script
     public bool forcePlayer;
 
+    public GameObject volumeEffect;
+
     #endregion
 
     #region Unity Methods
@@ -61,10 +66,25 @@ public class SCPController : MonoBehaviour
         if (playerInSight)
         {
             agent.SetDestination(player.position); // Chase the player
+            if (volumeEffect.GetComponent<SphereCollider>().radius < MAX_EFFECT_RANGE)
+            {
+                volumeEffect.GetComponent<SphereCollider>().radius += Time.deltaTime * 2f;
+            }
         }
         else if (playerHeard)
         {
             agent.SetDestination(lastSoundPosition); // Move to the last sound location
+            if (volumeEffect.GetComponent<SphereCollider>().radius < MAX_EFFECT_RANGE)
+            {
+                volumeEffect.GetComponent<SphereCollider>().radius += Time.deltaTime * 2f;
+            }
+        }
+        else
+        {
+            if (volumeEffect.GetComponent<SphereCollider>().radius > MIN_EFFECT_RANGE)
+            {
+                volumeEffect.GetComponent<SphereCollider>().radius -= Time.deltaTime;
+            }
         }
 
         // SCP catches the player if close enough

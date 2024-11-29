@@ -56,7 +56,7 @@ public class CCTVManager : MonoBehaviour
     {
         if (isTablet)
         {
-            if (PlayerPrefs.GetFloat("Battery")<=0)
+            if (PlayerPrefs.GetFloat("Battery") <= 0)
             {
                 CloseAllScreen();
                 cctvButtonHandler = GetComponent<CCTVButtonHandler>();
@@ -64,19 +64,9 @@ public class CCTVManager : MonoBehaviour
             }
             else
             {
-                /*if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    ReturnToMainCamera();
-                    ReturnMainScreen();
-
-                    ActiveTablet();
-                    cctvButtonHandler = GetComponent<CCTVButtonHandler>();
-                    cctvButtonHandler.OpenMainScreen();
-                }*/
-
                 if (isTablet || isCCTVMode)
                 {
-                    if (Input.GetKeyDown(KeyCode.X))
+                    if (Input.GetKeyDown(KeyCode.R))
                     {
                         if (currentCameraIndex == -1)
                         {
@@ -89,19 +79,13 @@ public class CCTVManager : MonoBehaviour
                             changeModeSound.Play();
                         }
                     }
-                } 
+                }
             }
-
-            if (Input.GetKeyDown(KeyCode.P))
-            {
-                UpGradeAssessLevel();
-            }
-            
         }
 
         if (!chargeStation.IsAnyCharging())
         {
-            if (Input.GetKeyDown(KeyCode.T))
+            if (Input.GetKeyDown(KeyCode.Q) && !isDisableTablet) // Prevent Q input when disabled
             {
                 ActiveTablet();
                 cctvButtonHandler = GetComponent<CCTVButtonHandler>();
@@ -114,6 +98,7 @@ public class CCTVManager : MonoBehaviour
             DisActiveTablet();
         }
     }
+
 
     public void ActiveTablet()
     {

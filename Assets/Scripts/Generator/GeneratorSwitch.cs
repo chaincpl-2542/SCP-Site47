@@ -12,7 +12,10 @@ public class GeneratorSwitch : MonoBehaviour, IInteractable
     [SerializeField] private GeneratorController generatorController;
     public void OnInteract()
     {
+        gameObject.GetComponent<AudioSource>().Play();
         animator.SetBool("On",true);
         generatorController.ActiveGenerator();
+        gameObject.layer = LayerMask.NameToLayer("Default");
+        this.enabled = false;
     }
 }

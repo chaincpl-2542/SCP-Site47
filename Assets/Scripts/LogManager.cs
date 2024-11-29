@@ -36,6 +36,7 @@ public class LogManager : MonoBehaviour
     public void ShowLog(LogInteract.LogType logType)
     {
         logParent.SetActive(true);
+        PlayerInteract.Instance.playerState = PlayerInteract.PlayerState.Log;
         if(logType == LogInteract.LogType.LogStart)
         {
             imageLog.sprite = logStart;

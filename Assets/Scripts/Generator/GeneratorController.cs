@@ -9,6 +9,7 @@ public class GeneratorController : MonoBehaviour
     public bool isActive;
     [SerializeField] private Animator generatorAnim;
     public List<GameObject> activeList;
+    public AudioClip activeSound;
     public void ActiveGenerator()
     {
         generatorAnim.SetBool("Active",true);
@@ -20,6 +21,9 @@ public class GeneratorController : MonoBehaviour
 
     public IEnumerator ActiveObjects()
     {
+        gameObject.GetComponent<AudioSource>().PlayOneShot(activeSound);
+        yield return new WaitForSeconds(1);
+        gameObject.GetComponent<AudioSource>().Play();
         yield return new WaitForSeconds(2);
 
         if(activeList.Count > 0)

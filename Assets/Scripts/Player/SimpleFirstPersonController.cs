@@ -50,6 +50,18 @@ public class SimpleFirstPersonController : MonoBehaviour
     public float normalFOV = 60f;  // Normal field of view
     public float runFOV = 75f;  // Field of view when running
     public float fovChangeSpeed = 5f;  // Speed of FOV change
+    
+    // Stamina variables
+    public float maxStamina = 5f; // Maximum stamina time in seconds
+    private float currentStamina;
+    public float staminaRegenRate = 1f; // Stamina regeneration per second
+    public float staminaDepletionRate = 1f; // Stamina depletion per second when running
+    public float regenDelay = 1f;
+
+    private float regenTimer;
+    public UnityEngine.UI.Image staminaBar; // Assign the UI Image bar in the Inspector
+
+    
     private bool isRunning = false;  // Whether the player is currently running
 
     void Start()
@@ -57,7 +69,9 @@ public class SimpleFirstPersonController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         stepTimer = walkStepInterval;
+        currentStamina = maxStamina;
         originalCameraLocalPosition = playerCamera.transform.localPosition;
+        regenTimer = regenDelay;
     }
 
     void Update()
@@ -79,12 +93,13 @@ public class SimpleFirstPersonController : MonoBehaviour
             MoveCameraCloser();
         }
         ApplyGravity();
+        UpdateStamina();
     }
 
     void MovePlayer()
     {
         // Check for running input
-        isRunning = Input.GetKey(KeyCode.LeftShift) && Input.GetAxis("Vertical") > 0;
+        isRunning = Input.GetKey(KeyCode.LeftShift) && Input.GetAxis("Vertical") > 0 && currentStamina > 0;
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
@@ -92,7 +107,12 @@ public class SimpleFirstPersonController : MonoBehaviour
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
         controller.Move(move * speed * Time.deltaTime);
-
+        
+        if (isRunning)
+        {
+            regenTimer = regenDelay;
+        }
+        
         // Footstep sound logic
         if (move.magnitude > 0)
         {
@@ -170,7 +190,34 @@ public class SimpleFirstPersonController : MonoBehaviour
             playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, originalCameraLocalPosition, Time.deltaTime * 5f);
         }
     }
+    
+    void UpdateStamina()
+    {
+        if (isRunning)
+        {
+            currentStamina -= staminaDepletionRate * Time.deltaTime;
+            currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+        }
+        else
+        {
+            if (regenTimer > 0)
+            {
+                regenTimer -= Time.deltaTime;
+            }
+            else
+            {
+                // Regenerate stamina if regen timer has expired
+                currentStamina += staminaRegenRate * Time.deltaTime;
+                currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+            }
+        }
 
+        // Update the stamina bar UI
+        if (staminaBar != null)
+        {
+            staminaBar.fillAmount = currentStamina / maxStamina;
+        }
+    }
 
     public void StartSmoothLookAt(Transform target)
     {
