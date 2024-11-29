@@ -64,7 +64,7 @@ public class CCTVManager : MonoBehaviour
             }
             else
             {
-                if (Input.GetKeyDown(KeyCode.Escape))
+                /*if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     ReturnToMainCamera();
                     ReturnMainScreen();
@@ -72,7 +72,7 @@ public class CCTVManager : MonoBehaviour
                     ActiveTablet();
                     cctvButtonHandler = GetComponent<CCTVButtonHandler>();
                     cctvButtonHandler.OpenMainScreen();
-                }
+                }*/
 
                 if (isTablet || isCCTVMode)
                 {
