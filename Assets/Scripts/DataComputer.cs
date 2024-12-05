@@ -33,13 +33,12 @@ public class DataComputer : MonoBehaviour, IInteractable
     }
     public void ActiveDataRoom()
     {
-        
         for(int i = 0; i < screenList.Count; i++)
         {
             screenList[i].SetActive(false);
         }
         eventControl.isDataRoom = true;
-        eventControl.ActiveEvent(2);
+        eventControl.ActiveEvent(4);
         EventControl.Instance.ActiveScpTrigger();
     }
 

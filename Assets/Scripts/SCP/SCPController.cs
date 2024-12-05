@@ -6,8 +6,8 @@ public class SCPController : MonoBehaviour
 {
     #region Variables
 
-    private const float MIN_EFFECT_RANGE = 2f;
-    private const float MAX_EFFECT_RANGE = 8f;
+    private const float MIN_EFFECT_RANGE = 5f;
+    private const float MAX_EFFECT_RANGE = 10f;
     
     public Transform player;
     public SCPState SCP_State;
