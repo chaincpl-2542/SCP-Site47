@@ -21,7 +21,6 @@ public class CCTVManager : MonoBehaviour
     public bool isNightMode = false, isCameraMode = false, isCCTVMode = false, isTablet = false;
     [SerializeField] GameObject playerPostprocessing;
     [SerializeField] GameObject cctvPostprocessing;
-    [SerializeField] CameraRotation[] cameraRotations;
     [SerializeField] AudioSource pickUpCamSound, changeModeSound, switchCamSound;
     BatteryController batteryController;
     CCTVButtonHandler cctvButtonHandler;
@@ -47,7 +46,6 @@ public class CCTVManager : MonoBehaviour
         playerPostprocessing.SetActive(true);
         mainCamera.gameObject.SetActive(true);
         mainCamera.enabled = true;
-        cameraRotations[0].enabled = true;
         chargeStation = FindObjectOfType<ChargeStation>();
         PlayerPrefs.SetFloat("Battery", 100f);
     }
@@ -138,7 +136,6 @@ public class CCTVManager : MonoBehaviour
         CloseAllScreen();
         screenVision.SetActive(false);
         screenCCTV[currentCameraIndex].gameObject.SetActive(true);
-        cameraRotations[currentCameraIndex+1].enabled = true;
     }
 
     public void ToggleNightVisionCamera()
@@ -218,7 +215,6 @@ public class CCTVManager : MonoBehaviour
         {
             screenCCTV.gameObject.SetActive(false);
         }
-        cameraRotations[0].enabled = true;
     }
 
     public void SwitchToCamera(int cameraIndex)
@@ -250,8 +246,6 @@ public class CCTVManager : MonoBehaviour
         currentCameraIndex = (currentCameraIndex + direction + screenCCTV.Length) % screenCCTV.Length;
 
         screenCCTV[currentCameraIndex].gameObject.SetActive(true);
-
-        cameraRotations[currentCameraIndex].enabled = true;
 
         isNightMode = false;
         batteryController = FindObjectOfType<BatteryController>();
