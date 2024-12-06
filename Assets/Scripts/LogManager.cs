@@ -13,6 +13,12 @@ public class LogManager : MonoBehaviour
 
     public Sprite logStart;
     public Sprite logTablet;
+    public Sprite logDetection;
+    public Sprite logFormless;
+    public Sprite logTeleportation;
+    public Sprite logWarningAggression;
+    public Sprite logWarningAttack;
+    public Sprite logWeapon;
 
     private void Awake()
     {
@@ -44,6 +50,30 @@ public class LogManager : MonoBehaviour
         else if(logType == LogInteract.LogType.LogTablet)
         {
             imageLog.sprite = logTablet;
+        }
+        else if(logType == LogInteract.LogType.LogTeleportation)
+        {
+            imageLog.sprite = logTeleportation;
+        }
+        else if(logType == LogInteract.LogType.LogDetection)
+        {
+            imageLog.sprite = logDetection;
+        }
+        else if(logType == LogInteract.LogType.LogFormless)
+        {
+            imageLog.sprite = logFormless;
+        }
+        else if(logType == LogInteract.LogType.LogWarningAggression)
+        {
+            imageLog.sprite = logWarningAggression;
+        }
+        else if(logType == LogInteract.LogType.LogWarningAttack)
+        {
+            imageLog.sprite = logWarningAttack;
+        }
+        else if(logType == LogInteract.LogType.LogWeapon)
+        {
+            imageLog.sprite = logWeapon;
         }
     }
 }

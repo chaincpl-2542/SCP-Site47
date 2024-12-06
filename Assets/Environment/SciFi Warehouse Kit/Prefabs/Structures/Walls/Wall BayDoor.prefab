@@ -42,7 +42,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c8417d61c802b2b448546f8b19b576a6, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 3186549f6f476f741b35072d37a3de4f, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.448
   m_Pitch: 1
@@ -416,6 +416,7 @@ GameObject:
   - component: {fileID: 3864413407623027494}
   - component: {fileID: 7603587438403863554}
   - component: {fileID: 1741535025003244446}
+  - component: {fileID: 4757207346943748576}
   m_Layer: 0
   m_Name: Wall BayDoor
   m_TagString: Untagged
@@ -476,9 +477,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorAnim: {fileID: 3864413407623027494}
-  lightAnim: {fileID: 0}
+  lightAnims: []
   audioSource: {fileID: 1740241467761520788}
   canOpen: 0
+  isMalfunction: 0
+  isAuto: 1
   isPlayer: 0
 --- !u!65 &1741535025003244446
 BoxCollider:
@@ -501,6 +504,25 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 6.471881, y: 3.670597, z: 6.9340515}
   m_Center: {x: 0, y: 1.3352985, z: 2.9670258}
+--- !u!114 &4757207346943748576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2702167651921923441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 0
+  m_OverrideGenerateLinks: 0
+  m_GenerateLinks: 0
+  m_IgnoreFromBuild: 0
+  m_ApplyToChildren: 1
+  m_AffectedAgents: ffffffff
 --- !u!1001 &8267430385162442630
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -571,10 +593,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4014954459174630923, guid: 278beaba190e243dd950be7a4b857276,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3231233757229379012}
-    - targetCorrespondingSourceObject: {fileID: 4014954459174630923, guid: 278beaba190e243dd950be7a4b857276,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 2958363802665846512}
   m_SourcePrefab: {fileID: 100100000, guid: 278beaba190e243dd950be7a4b857276, type: 3}
 --- !u!1 &4975399993979019661 stripped
@@ -583,25 +601,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 8267430385162442630}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3231233757229379012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4975399993979019661}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e3fdca004f2d45fe8abbed571a8abd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_OverrideArea: 1
-  m_Area: 0
-  m_OverrideGenerateLinks: 0
-  m_GenerateLinks: 0
-  m_IgnoreFromBuild: 0
-  m_ApplyToChildren: 1
-  m_AffectedAgents: ffffffff
 --- !u!65 &2958363802665846512
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -239,6 +239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   logType: 0
   audioSource: {fileID: 0}
+  highlight: {fileID: 6563518433305535220}
 --- !u!65 &2232226702650759583
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -14,10 +14,12 @@ public class ScpTrigger : MonoBehaviour
             if(!isHideScp)
             {
                 eventControl.SpawnSCP(scp_position, true);
+                gameObject.SetActive(false);
             }
             else
             {
                 eventControl.HideSCP();
+                gameObject.SetActive(false);
             }
         }
     }

@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class DataComputer : MonoBehaviour, IInteractable
 {
     public EventControl eventControl;
+    public Slider loadingBar;
 
     public List<GameObject> screenList;
     public bool isDownload;
@@ -18,7 +20,8 @@ public class DataComputer : MonoBehaviour, IInteractable
     {
         if(isDownload)
         {
-            downloadValue += Time.deltaTime * 20;
+            downloadValue += Time.deltaTime * 5;
+            loadingBar.value = downloadValue/100;
             if(downloadValue >= 100)
             {
                 downloadValue = 100;

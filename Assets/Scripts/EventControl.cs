@@ -16,6 +16,7 @@ public class EventControl : MonoBehaviour
     public bool isGeneratorRoom;
     public bool isDataRoom;
     public bool isControlRoom;
+    public List<WanderingZone> wanderingZones;
     public Transform scp;
 
     [Header("Event0")]
@@ -42,14 +43,28 @@ public class EventControl : MonoBehaviour
     {
         var index = eventIndex;
 
-        foreach(AutoDoor door in eventDoors[index].activeDoorsEvent)
+        if(eventDoors[index].activeDoorsEvent.Count > 0)
         {
-            door.DoorStatus(true);
+            foreach(AutoDoor door in eventDoors[index].activeDoorsEvent)
+            {
+                door.DoorStatus(true);
+            }
         }
 
-        foreach(AutoDoor door in eventDoors[index].deactivateDoorsEvent)
+        if( eventDoors[index].deactivateDoorsEvent.Count > 0)
         {
-            door.DoorStatus(false);
+            foreach(AutoDoor door in eventDoors[index].deactivateDoorsEvent)
+            {
+                door.DoorStatus(false);
+            }
+        }
+
+        if(eventIndex >= 5)
+        {
+            foreach(WanderingZone zone in wanderingZones)
+            {
+                zone.gameObject.SetActive(true);
+            }
         }
         
     }

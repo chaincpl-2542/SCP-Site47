@@ -10,6 +10,8 @@ public class AutoDoor : MonoBehaviour
     public bool canOpen = true;
     public bool isMalfunction;
     public bool isAuto = true;
+    public AudioClip openClip;
+    public AudioClip closeClip;
     [SerializeField] private bool isPlayer;
 
     // Start is called before the first frame update
@@ -62,7 +64,7 @@ public class AutoDoor : MonoBehaviour
                 {
                     if (audioSource != null)
                     {
-                        audioSource.Play();
+                        audioSource.PlayOneShot(openClip);
                     }
                     doorAnim.CrossFade("DoorOpen",0);
                     isPlayer = true;
@@ -81,7 +83,7 @@ public class AutoDoor : MonoBehaviour
                 {
                     if (audioSource != null)
                     {
-                        audioSource.Play();
+                        audioSource.PlayOneShot(closeClip);
                     }
                     doorAnim.CrossFade("DoorClose",0);
                     isPlayer = false;
@@ -94,18 +96,21 @@ public class AutoDoor : MonoBehaviour
     {
         DoorStatus(false);
         doorAnim.CrossFade("DoorMulfunction",0);
+        if (audioSource != null)
+        {
+            audioSource.PlayOneShot(closeClip);
+        }
         isPlayer = false;
     }
 
     public void DoorForceOpen()
     {
         DoorStatus(true);
-        isAuto = false;
+        isAuto = true;
         doorAnim.CrossFade("DoorOpen",0);
         if (audioSource != null)
         {
             audioSource.Play();
         }
-        isPlayer = false;
     }
 }

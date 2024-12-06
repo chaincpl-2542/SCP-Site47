@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using Unity.VisualScripting;
+using System.Collections.Generic;
 
 public class SCPController : MonoBehaviour
 {
@@ -30,15 +32,22 @@ public class SCPController : MonoBehaviour
     public float maxVisibleTime = 5f; // Maximum time SCP stays visible
     public bool isVisible = false;
     
-    private bool playerInSight; // Is the player visible to SCP?
-    private bool playerHeard; // Has the SCP heard the player?
+    public bool playerInSight; // Is the player visible to SCP?
+    public bool playerHeard; // Has the SCP heard the player?
     private Vector3 lastSoundPosition; // Last position where SCP heard the player
     private bool isCatchPlayer = false;
 
     public SimpleFirstPersonController simpleFirstPersonController; // Reference to the player's movement script
     public bool forcePlayer;
+    public ActionSoundControl actionSoundControl;
 
     public GameObject volumeEffect;
+    public List<Transform> wanderingPositions;
+    private Transform currentWanderingTarget;
+    private bool isWaitingAtPosition = false;
+
+
+    public bool isWanderingMode;
 
     #endregion
 
@@ -58,6 +67,17 @@ public class SCPController : MonoBehaviour
 
     private void Update()
     {
+        if(!simpleFirstPersonController)
+        {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<SimpleFirstPersonController>();
+        }
+
+        if(!actionSoundControl)
+        {
+            actionSoundControl = GameObject.FindGameObjectWithTag("Player").GetComponent<ActionSoundControl>();
+        }
+        
+
         if (IsPlayerCaught()) return; // Skip normal behavior if player is caught
 
         playerInSight = IsPlayerInSight();
@@ -66,6 +86,13 @@ public class SCPController : MonoBehaviour
         if (playerInSight)
         {
             agent.SetDestination(player.position); // Chase the player
+
+            if (actionSoundControl)
+            {
+                actionSoundControl.PlayDetectionSound(); // Play detection sound
+                actionSoundControl.StartChaseMusic(); // Start chase music
+            }
+
             if (volumeEffect.GetComponent<SphereCollider>().radius < MAX_EFFECT_RANGE)
             {
                 volumeEffect.GetComponent<SphereCollider>().radius += Time.deltaTime * 2f;
@@ -74,6 +101,12 @@ public class SCPController : MonoBehaviour
         else if (playerHeard)
         {
             agent.SetDestination(lastSoundPosition); // Move to the last sound location
+
+            if (actionSoundControl)
+            {
+                actionSoundControl.StartChaseMusic(); // Continue chase music
+            }
+
             if (volumeEffect.GetComponent<SphereCollider>().radius < MAX_EFFECT_RANGE)
             {
                 volumeEffect.GetComponent<SphereCollider>().radius += Time.deltaTime * 2f;
@@ -81,6 +114,11 @@ public class SCPController : MonoBehaviour
         }
         else
         {
+            if (actionSoundControl)
+            {
+                actionSoundControl.StopChaseMusic(); // Stop chase music when not chasing
+            }
+
             if (volumeEffect.GetComponent<SphereCollider>().radius > MIN_EFFECT_RANGE)
             {
                 volumeEffect.GetComponent<SphereCollider>().radius -= Time.deltaTime;
@@ -121,8 +159,37 @@ public class SCPController : MonoBehaviour
             maxVisibleTime = 0.3f;
             agentSpeed = 7;
         }
+
+        if (isWanderingMode && !playerInSight && !playerHeard)
+        {
+            PerformWandering();
+        }
+    }
+    private void PerformWandering()
+    {
+        if (isWaitingAtPosition || wanderingPositions.Count == 0) return;
+
+        if (currentWanderingTarget == null || agent.remainingDistance < 0.5f)
+        {
+            StartCoroutine(WanderingRoutine());
+        }
     }
 
+    private IEnumerator WanderingRoutine()
+    {
+        isWaitingAtPosition = true;
+
+        // If the agent is at a target, stop and wait for 2 seconds
+        agent.isStopped = true;
+        yield return new WaitForSeconds(3f);
+
+        // Select a new random position
+        currentWanderingTarget = wanderingPositions[Random.Range(0, wanderingPositions.Count)];
+        agent.SetDestination(currentWanderingTarget.position);
+        agent.isStopped = false;
+
+        isWaitingAtPosition = false;
+    }
     #endregion
 
     #region Player Catching Mechanism
