@@ -31,14 +31,6 @@ public class LogManager : MonoBehaviour
         Instance = this;
     }
     
-    void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.Escape))
-        {
-            logParent.SetActive(false);
-        }
-    }
-
     public void ShowLog(LogInteract.LogType logType)
     {
         logParent.SetActive(true);
@@ -75,5 +67,16 @@ public class LogManager : MonoBehaviour
         {
             imageLog.sprite = logWeapon;
         }
+    }
+
+    public void CloseLog()
+    {
+        logParent.SetActive(false);
+        PlayerInteract.Instance.playerState = PlayerInteract.PlayerState.Default;
+    }
+
+    public bool IsLogOpen()
+    {
+        return logParent.activeSelf;
     }
 }

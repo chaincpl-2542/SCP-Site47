@@ -9,7 +9,8 @@ public class PlayerInteract : MonoBehaviour
     public enum PlayerState
     {
         None,
-        Log
+        Log,
+        Default
     }
     
     public float interactRange = 2f;

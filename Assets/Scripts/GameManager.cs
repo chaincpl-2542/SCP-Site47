@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using ES3Internal;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,5 +39,15 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void SaveGame()
+    {
+        ES3AutoSaveMgr.Current.Save();
+    }
+
+    public void LoadGame()
+    {
+        ES3AutoSaveMgr.Current.Load();
     }
 }
