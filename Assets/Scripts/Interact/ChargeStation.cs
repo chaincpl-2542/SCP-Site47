@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class ChargeStation : MonoBehaviour, IInteractable
 {
@@ -9,6 +10,7 @@ public class ChargeStation : MonoBehaviour, IInteractable
     public bool isCharging = false;
 
     [SerializeField] private TMP_Text batteryText;
+    [SerializeField] private Image batteryImage;
     private float currentBattery;
     private float currentChargeRate = 10;
     private int showBattery;
@@ -31,6 +33,7 @@ public class ChargeStation : MonoBehaviour, IInteractable
             PlayerPrefs.SetFloat("Battery", currentBattery);
             showBattery = (int)currentBattery;
             batteryText.text = showBattery + "%";
+            batteryImage.fillAmount = currentBattery / 100;
         }
     }
 

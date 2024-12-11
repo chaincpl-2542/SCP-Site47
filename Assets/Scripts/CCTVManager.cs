@@ -28,6 +28,9 @@ public class CCTVManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI assessText;
     [SerializeField] private int assessLevel = 1;
 
+    [SerializeField] private bool _canJammer;
+    [SerializeField] GameObject textJammer;
+
     private void Awake() 
     {
         if (Instance == null)
@@ -97,6 +100,11 @@ public class CCTVManager : MonoBehaviour
         }
     }
 
+    public void PickJammer()
+    {
+        _canJammer = true;
+        textJammer.SetActive(true);
+    }
 
     public void ActiveTablet()
     {
