@@ -19,7 +19,7 @@ public class SCPTeleport : MonoBehaviour
 
     private void Start()
     {
-        CCTVManager.Instance.changeCamera += TeleportTo;
+        TabletManager.Instance.changeCamera += TeleportTo;
         RandomRoom();
     }
 

@@ -3,10 +3,10 @@ using System.Collections;
 
 public class GeneratorRoomSCPEvent : MonoBehaviour
 {
-    public Transform scpTransform; // Reference to the SCP's transform
-    public float lookDuration = 5f; // Time to force the player to look at SCP
-    public float teleportDistance = 0.5f; // Distance from player when SCP teleports
-    public float scpVisibleDuration = 0.5f; // Time SCP stays visible in front of the player
+    public Transform scpTransform;
+    public float lookDuration = 5f; 
+    public float teleportDistance = 0.5f; 
+    public float scpVisibleDuration = 0.5f; 
     public Vector3 teleportOffset = new Vector3(0, -1f, 0);
     public GameObject playerCamera;
     public AudioSource jumpScareSound;
@@ -18,7 +18,7 @@ public class GeneratorRoomSCPEvent : MonoBehaviour
     void OnTriggerStay(Collider other)
     {
         if (eventTriggered) return; // Ensure the event triggers only once
-        if (other.CompareTag("Player") && CCTVManager.Instance.isTablet)
+        if (other.CompareTag("Player") && TabletManager.Instance.isTablet)
         {
             Debug.Log("SCP Event");
             eventTriggered = true;
@@ -40,10 +40,14 @@ public class GeneratorRoomSCPEvent : MonoBehaviour
         playerController.disablePlayerControll = true;
 
         // Disable tablet interaction
-        CCTVManager.Instance.isDisableTablet = true;
+        TabletManager.Instance.isDisableTablet = true;
 
         // Force the player to look at the SCP
         playerController.StartSmoothLookAt(scpTransform);
+        
+        Vector3 directionToPlayer = playerTransform.position - scpTransform.transform.position;
+        scpTransform.rotation = Quaternion.LookRotation(directionToPlayer);
+        
         yield return new WaitForSeconds(lookDuration);
 
         // Teleport the SCP in front of the player
@@ -63,7 +67,7 @@ public class GeneratorRoomSCPEvent : MonoBehaviour
         // Alternatively: scpTransform.gameObject.SetActive(false);
         
         // Re-enable tablet interaction
-        CCTVManager.Instance.isDisableTablet = false;
+        TabletManager.Instance.isDisableTablet = false;
 
         // Re-enable player movement and controls
         playerController.disablePlayerControll = false;

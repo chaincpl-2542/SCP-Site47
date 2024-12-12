@@ -12,14 +12,14 @@ public class CCTV : MonoBehaviour
 
     private void Start() 
     {
-        CCTVManager.Instance.forceNoise += ForceNoise;
-        CCTVManager.Instance.changeCamera += ChangeCameraNoise;
+        TabletManager.Instance.forceNoise += ForceNoise;
+        TabletManager.Instance.changeCamera += ChangeCameraNoise;
     }
 
     private void OnDisable() 
     {
-        CCTVManager.Instance.forceNoise -= ForceNoise;
-        CCTVManager.Instance.changeCamera -= ChangeCameraNoise;
+        TabletManager.Instance.forceNoise -= ForceNoise;
+        TabletManager.Instance.changeCamera -= ChangeCameraNoise;
     }
 
     private void Update() 

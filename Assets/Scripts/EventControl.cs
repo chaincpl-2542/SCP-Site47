@@ -97,13 +97,17 @@ public class EventControl : MonoBehaviour
         scp.GetComponent<SCPController>().forcePlayer = true;
     }
 
-    void Update()
+    public void PickupTablet()
     {
-        if(gotTablet)
+        if (!gotTablet)
         {
             ActiveEvent(0);
+            gotTablet = true;
         }
-
+    }
+    
+    void Update()
+    {
         if(Input.GetKeyDown(KeyCode.O))
         {
             HideSCP();

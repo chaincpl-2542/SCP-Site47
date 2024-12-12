@@ -49,7 +49,7 @@ public class ChargeStation : MonoBehaviour, IInteractable
             audioSource.Play();
         }
 
-        EventControl.Instance.gotTablet = true;
+        EventControl.Instance.PickupTablet();
         if (!IsAnyCharging())
         {
             tabletOnCharge.SetActive(true);

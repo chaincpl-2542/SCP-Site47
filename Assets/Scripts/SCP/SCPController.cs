@@ -46,8 +46,9 @@ public class SCPController : MonoBehaviour
     private Transform currentWanderingTarget;
     private bool isWaitingAtPosition = false;
 
-
     public bool isWanderingMode;
+
+    private bool _isStun;
 
     #endregion
 
@@ -233,7 +234,7 @@ public class SCPController : MonoBehaviour
         Debug.Log("SCP has caught the player!");
 
         GameManager.Instance.RestartGame();
-        CCTVManager.Instance.isDisableTablet = true;
+        TabletManager.Instance.isDisableTablet = true;
     }
 
     void LookAtPlayer()
@@ -268,7 +269,7 @@ public class SCPController : MonoBehaviour
 
     public IEnumerator BlinkRandomly()
     {
-        while (true)
+        while (!_isStun)
         {
             // Hide the SCP model (make it invisible) and allow it to move
             scpModel.SetActive(false);
@@ -284,7 +285,7 @@ public class SCPController : MonoBehaviour
             agent.velocity = Vector3.zero;
 
             // Play the glitch sound when the SCP becomes visible
-            if(CCTVManager.Instance.isTablet)
+            if(TabletManager.Instance.isTablet)
                 SoundManager.instance.PlayGlitchSound();
 
             float visibleTime = Random.Range(minVisibleTime, maxVisibleTime);
@@ -387,4 +388,43 @@ public class SCPController : MonoBehaviour
         Angry,
         Mad
     }
+
+    #region Stun
+
+    public void StunSCP(float stunDuration)
+    {
+        StartCoroutine(StunRoutine(stunDuration));
+    }
+
+    private IEnumerator StunRoutine(float stunDuration)
+    {
+        Debug.Log("SCP is stunned!");
+
+        // Make SCP invisible and stop it
+        _isStun = true;
+        scpModel.SetActive(true);
+        isVisible = true;
+        agent.isStopped = true;
+        animator.SetBool("Stun",true);
+        foreach (Transform child in gameObject.transform)
+        {
+            if (child == null) continue;
+        }
+        agent.velocity = Vector3.zero;
+
+        // Wait for the stun duration
+        yield return new WaitForSeconds(stunDuration);
+
+        // Reactivate SCP
+        animator.SetBool("Stun",false);
+        _isStun = false;
+        StartCoroutine(BlinkRandomly());
+        foreach (Transform child in gameObject.transform)
+        {
+            if (child == null) continue;
+        }
+        Debug.Log("SCP is no longer stunned!");
+    }
+
+    #endregion
 }

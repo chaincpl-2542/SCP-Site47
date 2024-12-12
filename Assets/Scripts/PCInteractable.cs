@@ -38,13 +38,6 @@ public class PCInteractable : MonoBehaviour
         }
     }
 
-    void ShowCCTVUI()
-    {
-        cctvUI.GetComponentInParent<CCTVManager>().GetCurrentCamera();
-        cctvUI.SetActive(true);
-        isUIOpen = true;
-    }
-
     void CloseCCTVUI()
     {
         cctvUI.SetActive(false);

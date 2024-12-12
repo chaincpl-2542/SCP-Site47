@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+
 public class CCTVButtonHandler : MonoBehaviour
 {
-    public CCTVManager cctvManager;
+    [FormerlySerializedAs("cctvManager")] public TabletManager tabletManager;
     public GameObject cctvUI;
     public GameObject mainScreenUI, cameraScreenUI, CCTVScreenUI;
     BatteryController batteryController;
@@ -29,13 +31,10 @@ public class CCTVButtonHandler : MonoBehaviour
 
     public void OnCameraButtonClick(int cameraIndex)
     {
-        if (cctvManager == null)
+        if (tabletManager == null)
         {
             Debug.LogError("CCTVManager is not assigned!");
             return;
         }
-
-        
-        cctvManager.SwitchToCamera(cameraIndex);
     }
 }
