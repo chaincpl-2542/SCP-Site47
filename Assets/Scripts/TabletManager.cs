@@ -25,7 +25,7 @@ public class TabletManager : MonoBehaviour
     CCTVButtonHandler cctvButtonHandler;
     public ChargeStation chargeStation;
     [SerializeField] private TextMeshProUGUI assessText;
-    [SerializeField] private int assessLevel = 1;
+    [SerializeField] private int assessLevel = 3;
 
     [SerializeField] GameObject textJammer;
     private bool jammerCooldown = false;
@@ -35,6 +35,8 @@ public class TabletManager : MonoBehaviour
     private float _jammerCooldownTimer = 0f;
     [SerializeField] private float jammerRange = 10f; // Jammer's effective range
     [SerializeField] private float stunDuration = 5f; // Duration of the SCP stun
+    [SerializeField] private GameObject _jammerVfx;
+    [SerializeField] private AudioSource _jammerSound;
 
     private void Awake() 
     {
@@ -50,6 +52,7 @@ public class TabletManager : MonoBehaviour
 
     void Start()
     {
+        assessText.text = "Assess Level : " + assessLevel;
         cctvPostprocessing.SetActive(false);
         playerPostprocessing.SetActive(true);
         mainCamera.gameObject.SetActive(true);
@@ -83,8 +86,8 @@ public class TabletManager : MonoBehaviour
                     }
                 }
             }
-            UpdateJammerCooldownSlider();
         }
+        UpdateJammerCooldownSlider();
 
         if (!chargeStation.IsAnyCharging())
         {
@@ -101,7 +104,12 @@ public class TabletManager : MonoBehaviour
             DisActiveTablet();
         }
     }
-
+    
+    public int GetPlayerAccessLevel()
+    {
+        return assessLevel;
+    }
+    
     public void PickJammer()
     {
         _canJammer = true; 
@@ -128,6 +136,9 @@ public class TabletManager : MonoBehaviour
             TriggerJammerEffect();
             
             StartJammerCooldown();
+            StartCoroutine(HideEffect());
+            _jammerSound.Play();
+            _jammerVfx.SetActive(true);
         }
         else
         {
@@ -276,8 +287,14 @@ public class TabletManager : MonoBehaviour
 
     public void UpGradeAssessLevel()
     {
-        assessLevel++;
+        assessLevel = 5;
         assessText.text = "Assess Level : " + assessLevel;
+    }
+
+    private IEnumerator HideEffect()
+    {
+        yield return new WaitForSeconds(0.5f);
+        _jammerVfx.SetActive(false);
     }
 
 }

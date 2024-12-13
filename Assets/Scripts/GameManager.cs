@@ -21,27 +21,20 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            SaveGame();
-        }
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            LoadGame();
-        }
-    }
-
     public void RestartGame()
     {
-        StartCoroutine(DelayLoadscene(1,3));
+        StartCoroutine(RestartGame(3));
     }
 
     public IEnumerator DelayLoadscene(int num,float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(num);
+        SceneManager.LoadScene(0);
+    }
+    public IEnumerator RestartGame(float num)
+    {
+        yield return new WaitForSeconds(num);
+        LoadGame();
     }
 
     public void EndGame()

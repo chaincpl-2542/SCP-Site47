@@ -51,4 +51,11 @@ public class GuideTextController : MonoBehaviour
         }
         guideText.SetActive(true);
     }
+
+    public void ForceShowDialogue(string dialogue)
+    {
+        guideText.SetActive(false);
+        guideText.GetComponent<TextMeshProUGUI>().text = dialogue;
+        guideText.SetActive(true);
+    }
 }

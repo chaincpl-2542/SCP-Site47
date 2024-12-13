@@ -29,5 +29,7 @@ public class JammerInteract : MonoBehaviour, IInteractable
 
         Destroy(gameObject); // Remove the Jammer object from the scene
         Debug.Log("Jammer picked up!");
+        
+        GuideTextController.Instance.ForceShowDialogue("This EMP Jammer will disrupt SCP");
     }
 }

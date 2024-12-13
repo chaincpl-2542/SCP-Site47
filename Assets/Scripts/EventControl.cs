@@ -76,7 +76,6 @@ public class EventControl : MonoBehaviour
 
     public void SpawnSCP(Transform spawnPosition,bool isForcePlayer)
     {
-        StartCoroutine(scp.GetComponent<SCPController>().BlinkRandomly());
         scp.transform.position = spawnPosition.position;
         scp.transform.rotation = spawnPosition.rotation;
 

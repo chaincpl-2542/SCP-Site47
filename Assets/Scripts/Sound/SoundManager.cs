@@ -7,6 +7,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource floatingSound;
     public AudioSource glitchSound;
     public AudioSource jumpscareSound;
+    public AudioSource stunSound;
 
     void Awake()
     {
@@ -50,5 +51,17 @@ public class SoundManager : MonoBehaviour
     public void PlayJumpscareSound()
     {
         jumpscareSound.PlayOneShot(jumpscareSound.clip);
+    }
+    
+    public void SCPStunSound(bool isPlay = true)
+    {
+        if (isPlay)
+        {
+            stunSound.Play();
+        }
+        else
+        {
+            stunSound.Stop();
+        }
     }
 }

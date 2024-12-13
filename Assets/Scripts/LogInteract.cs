@@ -11,7 +11,8 @@ public class LogInteract : MonoBehaviour, IInteractable
     LogTeleportation,
     LogWarningAttack,
     LogWarningAggression,
-    LogWeapon
+    LogWeapon,
+    LogJammer
     
 }
     public LogType logType;

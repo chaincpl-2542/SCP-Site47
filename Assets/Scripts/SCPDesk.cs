@@ -20,5 +20,6 @@ public class SCPDesk : MonoBehaviour, IInteractable
         gameObject.layer = 0;
         GetComponent<BoxCollider>().enabled = false;
         scpWandering .SetActive(true);
+        GameManager.Instance.SaveGame();
     }
 }

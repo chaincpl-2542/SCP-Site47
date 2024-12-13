@@ -20,7 +20,7 @@ public class DataComputer : MonoBehaviour, IInteractable
     {
         if(isDownload)
         {
-            downloadValue += Time.deltaTime * 5;
+            downloadValue += Time.deltaTime * 20;
             loadingBar.value = downloadValue/100;
             if(downloadValue >= 100)
             {
@@ -28,6 +28,9 @@ public class DataComputer : MonoBehaviour, IInteractable
                 if(!check)
                 {
                     ActiveDataRoom();
+                    GetComponent<AudioSource>().Play();
+                    GuideTextController.Instance.ForceShowDialogue("Upgrade access to level 5.");
+                    TabletManager.Instance.UpGradeAssessLevel();
                     check = true;
                 }
             }
@@ -43,6 +46,7 @@ public class DataComputer : MonoBehaviour, IInteractable
         eventControl.isDataRoom = true;
         eventControl.ActiveEvent(4);
         EventControl.Instance.ActiveScpTrigger();
+        GameManager.Instance.SaveGame();
     }
 
      public void OnInteract()

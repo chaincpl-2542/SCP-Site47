@@ -19,6 +19,7 @@ public class LogManager : MonoBehaviour
     public Sprite logWarningAggression;
     public Sprite logWarningAttack;
     public Sprite logWeapon;
+    public Sprite logJammer;
 
     private void Awake()
     {
@@ -67,6 +68,11 @@ public class LogManager : MonoBehaviour
         {
             imageLog.sprite = logWeapon;
         }
+        else if(logType == LogInteract.LogType.LogJammer)
+        {
+            imageLog.sprite = logJammer;
+        }
+
     }
 
     public void CloseLog()

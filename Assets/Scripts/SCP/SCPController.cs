@@ -31,11 +31,18 @@ public class SCPController : MonoBehaviour
     public float minVisibleTime = 2f; // Minimum time SCP stays visible
     public float maxVisibleTime = 5f; // Maximum time SCP stays visible
     public bool isVisible = false;
+    private float blinkTimer = 0f; // Timer to manage the blink logic
+    private bool isBlinking = false;
     
     public bool playerInSight; // Is the player visible to SCP?
     public bool playerHeard; // Has the SCP heard the player?
     private Vector3 lastSoundPosition; // Last position where SCP heard the player
     private bool isCatchPlayer = false;
+    
+    public AudioSource floatingSound;
+    public AudioSource glitchSound;
+    public AudioSource jumpscareSound;
+    public AudioSource stunSound;
 
     public SimpleFirstPersonController simpleFirstPersonController; // Reference to the player's movement script
     public bool forcePlayer;
@@ -56,8 +63,8 @@ public class SCPController : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(BlinkRandomly());
-        SoundManager.instance.PlayFloatingSound();
+        //StartCoroutine(BlinkRandomly());
+        floatingSound.Play();
 
         if (agent)
         {
@@ -129,7 +136,7 @@ public class SCPController : MonoBehaviour
         // SCP catches the player if close enough
         if (Vector3.Distance(player.position, transform.position) <= attackRange)
         {
-            if(!isCatchPlayer)
+            if(!isCatchPlayer && !_isStun)
             {
                 CatchPlayer(); // Stop the player and make SCP visible permanently
                 isCatchPlayer = true;
@@ -165,6 +172,45 @@ public class SCPController : MonoBehaviour
         {
             PerformWandering();
         }
+        
+        if (!_isStun && !isCatchPlayer)
+        {
+            blinkTimer -= Time.deltaTime;
+
+            if (blinkTimer <= 0f)
+            {
+                if (isBlinking)
+                {
+                    // SCP becomes invisible and starts moving
+                    scpModel.SetActive(false);
+                    isVisible = false;
+                    agent.isStopped = false;
+
+                    // Reset the timer for the invisible duration
+                    blinkTimer = invisibleDuration;
+                    isBlinking = false;
+                }
+                else
+                {
+                    // SCP becomes visible and stops moving
+                    scpModel.SetActive(true);
+                    isVisible = true;
+                    agent.isStopped = true;
+                    agent.velocity = Vector3.zero;
+
+                    // Play glitch sound when SCP becomes visible
+                    if (TabletManager.Instance.isTablet)
+                    {
+                        glitchSound.Play();
+                    }
+
+                    // Reset the timer for the visible duration
+                    blinkTimer = Random.Range(minVisibleTime, maxVisibleTime);
+                    isBlinking = true;
+                }
+            }
+        }
+
     }
     private void PerformWandering()
     {
@@ -213,7 +259,7 @@ public class SCPController : MonoBehaviour
         StopAllCoroutines(); // Stop blinking behavior
         scpModel.SetActive(true); // Make SCP permanently visible
 
-        SoundManager.instance.PlayJumpscareSound();
+        jumpscareSound.Play();
         LookAtPlayer();
 
         // Stop player movement and camera control
@@ -285,7 +331,7 @@ public class SCPController : MonoBehaviour
 
             // Play the glitch sound when the SCP becomes visible
             if(TabletManager.Instance.isTablet)
-                SoundManager.instance.PlayGlitchSound();
+                glitchSound.Play();
 
             float visibleTime = Random.Range(minVisibleTime, maxVisibleTime);
             yield return new WaitForSeconds(visibleTime);
@@ -398,13 +444,13 @@ public class SCPController : MonoBehaviour
     private IEnumerator StunRoutine(float stunDuration)
     {
         Debug.Log("SCP is stunned!");
-
         // Make SCP invisible and stop it
         _isStun = true;
         scpModel.SetActive(true);
         isVisible = true;
         agent.isStopped = true;
         animator.SetBool("Stun",true);
+        stunSound.Play();
         foreach (Transform child in gameObject.transform)
         {
             if (child == null) continue;
@@ -416,8 +462,8 @@ public class SCPController : MonoBehaviour
 
         // Reactivate SCP
         animator.SetBool("Stun",false);
+        stunSound.Stop();
         _isStun = false;
-        StartCoroutine(BlinkRandomly());
         foreach (Transform child in gameObject.transform)
         {
             if (child == null) continue;
