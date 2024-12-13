@@ -260,7 +260,6 @@ public class SCPController : MonoBehaviour
     void UpdateAnimation()
     {
         float speed = agent.velocity.magnitude;
-        animator.SetFloat("Speed", speed); // Control animation based on SCP speed
     }
 
     #endregion

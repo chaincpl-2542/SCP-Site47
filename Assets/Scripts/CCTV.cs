@@ -10,18 +10,6 @@ public class CCTV : MonoBehaviour
     [SerializeField] private float normalNoiseTime = 0.5f;
     private float noiseTimer;
 
-    private void Start() 
-    {
-        TabletManager.Instance.forceNoise += ForceNoise;
-        TabletManager.Instance.changeCamera += ChangeCameraNoise;
-    }
-
-    private void OnDisable() 
-    {
-        TabletManager.Instance.forceNoise -= ForceNoise;
-        TabletManager.Instance.changeCamera -= ChangeCameraNoise;
-    }
-
     private void Update() 
     {
         if(noiseTimer > 0)

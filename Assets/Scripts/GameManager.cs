@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,18 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            SaveGame();
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            LoadGame();
         }
     }
 
@@ -44,10 +57,12 @@ public class GameManager : MonoBehaviour
     public void SaveGame()
     {
         ES3AutoSaveMgr.Current.Save();
+        Debug.Log("SaveGame");
     }
 
     public void LoadGame()
     {
         ES3AutoSaveMgr.Current.Load();
+        Debug.Log("LoadGame");
     }
 }

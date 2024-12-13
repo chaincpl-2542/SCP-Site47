@@ -2,34 +2,37 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TabletManager : MonoBehaviour
 {
     public GameObject tabletSCP;
     public static TabletManager Instance;
-    public Action forceNoise;
-    public Action changeCamera;
-    public Camera mainCamera;
-    public Camera[] cctvCameras;
-    public GameObject[] screenCCTV;
-    public GameObject screenVision;
-    public GameObject nightVisionCamera;
-    public GameObject[] nightVisionCCTV;
+
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private Camera _tabletCamera;
+    [SerializeField] private Camera _nightVisionCamera;
+    [SerializeField] private GameObject screenVision;
+    [SerializeField] private GameObject nightVisionCamera;
+    
     public bool isDisableTablet = false;
     [SerializeField] private int currentCameraIndex = -1;
-    public bool isNightMode = false, isCameraMode = false, isCCTVMode = false, isTablet = false;
+    public bool isNightMode = false, isCameraMode = false, isTablet = false;
     [SerializeField] GameObject playerPostprocessing;
     [SerializeField] GameObject cctvPostprocessing;
     [SerializeField] AudioSource pickUpCamSound, changeModeSound, switchCamSound;
-    BatteryController batteryController;
+    [SerializeField] private BatteryController batteryController;
     CCTVButtonHandler cctvButtonHandler;
     public ChargeStation chargeStation;
     [SerializeField] private TextMeshProUGUI assessText;
     [SerializeField] private int assessLevel = 1;
 
-    [SerializeField] private bool _canJammer;
     [SerializeField] GameObject textJammer;
     private bool jammerCooldown = false;
+    [SerializeField] private bool _canJammer;
+    [SerializeField] private Slider jammerCooldownSlider;
+    [SerializeField] private float _jammerCooldownDuration = 10f;
+    private float _jammerCooldownTimer = 0f;
     [SerializeField] private float jammerRange = 10f; // Jammer's effective range
     [SerializeField] private float stunDuration = 5f; // Duration of the SCP stun
 
@@ -61,26 +64,17 @@ public class TabletManager : MonoBehaviour
         {
             if (PlayerPrefs.GetFloat("Battery") <= 0)
             {
-                CloseAllScreen();
                 cctvButtonHandler = GetComponent<CCTVButtonHandler>();
                 cctvButtonHandler.CloseAllUI();
             }
             else
             {
-                if (isTablet || isCCTVMode)
+                if (isTablet)
                 {
                     if (Input.GetKeyDown(KeyCode.R))
                     {
-                        if (currentCameraIndex == -1)
-                        {
-                            ToggleNightVisionCamera();
-                            changeModeSound.Play();
-                        }
-                        else
-                        {
-                            ToggleNightVisionCCTV();
-                            changeModeSound.Play();
-                        }
+                        ToggleNightVisionCamera();
+                        changeModeSound.Play();
                     }
                     
                     if (_canJammer && Input.GetKeyDown(KeyCode.F))
@@ -89,11 +83,12 @@ public class TabletManager : MonoBehaviour
                     }
                 }
             }
+            UpdateJammerCooldownSlider();
         }
 
         if (!chargeStation.IsAnyCharging())
         {
-            if (Input.GetKeyDown(KeyCode.Q) && !isDisableTablet) // Prevent Q input when disabled
+            if (Input.GetKeyDown(KeyCode.Q) && !isDisableTablet)
             {
                 ActiveTablet();
                 cctvButtonHandler = GetComponent<CCTVButtonHandler>();
@@ -132,7 +127,7 @@ public class TabletManager : MonoBehaviour
 
             TriggerJammerEffect();
             
-            StartCoroutine(StartJammerCooldown(10f));
+            StartJammerCooldown();
         }
         else
         {
@@ -157,6 +152,37 @@ public class TabletManager : MonoBehaviour
             }
         }
     }
+    
+    private void UpdateJammerCooldownSlider()
+    {
+        if (jammerCooldown)
+        {
+            _jammerCooldownTimer += Time.deltaTime;
+
+            // Update slider value
+            float cooldownProgress = _jammerCooldownTimer / _jammerCooldownDuration;
+            jammerCooldownSlider.value = Mathf.Clamp01(cooldownProgress);
+
+            // Check if cooldown is complete
+            if (_jammerCooldownTimer >= _jammerCooldownDuration)
+            {
+                jammerCooldown = false;
+                jammerCooldownSlider.value = 1f; // Ensure slider is full
+                Debug.Log("Jammer is ready to use again!");
+            }
+        }
+        else
+        {
+            jammerCooldownSlider.value = 1f; // Jammer ready
+        }
+    }
+    
+    private void StartJammerCooldown()
+    {
+        jammerCooldown = true;
+        _jammerCooldownTimer = 0f; // Reset the timer
+    }
+    
     private void OnDrawGizmosSelected()
     {
         // Set the Gizmo color
@@ -164,14 +190,6 @@ public class TabletManager : MonoBehaviour
 
         // Draw a wire sphere to represent the Jammer range
         Gizmos.DrawWireSphere(transform.position, jammerRange);
-    }
-    
-    private IEnumerator StartJammerCooldown(float cooldownTime)
-    {
-        jammerCooldown = true;
-        yield return new WaitForSeconds(cooldownTime);
-        jammerCooldown = false;
-        Debug.Log("Jammer is ready to use again!");
     }
 
     public void ActiveTablet()
@@ -181,17 +199,18 @@ public class TabletManager : MonoBehaviour
             tabletSCP.SetActive(true);
             isTablet = true;
             isCameraMode = true;
-            currentCameraIndex = -1;
-            CloseAllScreen();
-            ReturnToMainCamera();
-            ReturnMainScreen();
         }
         else
         {
             tabletSCP.SetActive(false);
             isTablet = false;
             isCameraMode = false;
-            currentCameraIndex = -1;
+            
+            ReturnToMainCamera();
+            ReturnMainScreen();
+            nightVisionCamera.SetActive(false);
+            isNightMode = false;
+            batteryController.ToggleNightMode(isNightMode);
         }
         pickUpCamSound.Play();
     }
@@ -204,24 +223,12 @@ public class TabletManager : MonoBehaviour
         currentCameraIndex = -1;
     }
 
-    public void ActivateCCTV()
-    {
-        ResetMode();
-        currentCameraIndex = 0;
-        isCCTVMode = true;
-        CloseAllScreen();
-        screenVision.SetActive(false);
-        screenCCTV[currentCameraIndex].gameObject.SetActive(true);
-    }
-
     public void ToggleNightVisionCamera()
     {
-        CloseAllScreen();
         if (!isNightMode)
         {
             nightVisionCamera.SetActive(true);
             isNightMode = true;
-            batteryController = FindObjectOfType<BatteryController>();
             batteryController.ToggleNightMode(isNightMode);
         }
         else
@@ -230,116 +237,38 @@ public class TabletManager : MonoBehaviour
             ReturnMainScreen();
             nightVisionCamera.SetActive(false);
             isNightMode = false;
-            batteryController = FindObjectOfType<BatteryController>();
             batteryController.ToggleNightMode(isNightMode);
         }
     }
 
     public void ToggleNightVisionCCTV()
     {
-        CloseAllScreen();
         if (!isNightMode)
         {
-            nightVisionCCTV[currentCameraIndex].SetActive(true);
             isNightMode = true;
-            batteryController = FindObjectOfType<BatteryController>();
             batteryController.ToggleNightMode(isNightMode);
         }
         else
         {
-            nightVisionCCTV[currentCameraIndex].SetActive(false);
-            screenCCTV[currentCameraIndex].gameObject.SetActive(true);
             isNightMode = false;
-            batteryController = FindObjectOfType<BatteryController>();
             batteryController.ToggleNightMode(isNightMode);
-        }
-    }
-
-    public void CloseAllScreen()
-    {
-        screenVision.SetActive(false);
-        nightVisionCamera.SetActive(false);
-        foreach (GameObject screenCCTV in screenCCTV)
-        {
-            screenCCTV.gameObject.SetActive(false);
-        }
-        foreach (GameObject nightVisionCCTV in nightVisionCCTV)
-        {
-            nightVisionCCTV.gameObject.SetActive(false);
         }
     }
 
     public void ResetMode()
     {
-        isCCTVMode = false;
         isNightMode = false;
-        batteryController = FindObjectOfType<BatteryController>();
         batteryController.ToggleNightMode(isNightMode);
-    }
-
-    public void GetCurrentCamera()
-    {
-        SwitchToCamera(currentCameraIndex);
     }
 
     public void ReturnMainScreen()
     {
-        currentCameraIndex = -1;
         ResetMode();
         screenVision.SetActive(true);
-        foreach (GameObject screenCCTV in screenCCTV)
-        {
-            screenCCTV.gameObject.SetActive(false);
-        }
-    }
-
-    public void SwitchToCamera(int cameraIndex)
-    {
-        if (cameraIndex >= 0 && cameraIndex < cctvCameras.Length)
-        {
-            
-            mainCamera.enabled = false;
-
-
-            if (currentCameraIndex >= 0 && currentCameraIndex < cctvCameras.Length)
-            {
-                cctvCameras[currentCameraIndex].gameObject.SetActive(false);
-            }
-
-            currentCameraIndex = cameraIndex;
-            cctvCameras[currentCameraIndex].gameObject.SetActive(true);
-
-            changeCamera();
-        }
-        cctvPostprocessing.SetActive(true);
-        playerPostprocessing.SetActive(false);
-    }
-
-    public void SwitchToNextCamera(int direction)
-    {
-        screenCCTV[currentCameraIndex].gameObject.SetActive(false);
-
-        currentCameraIndex = (currentCameraIndex + direction + screenCCTV.Length) % screenCCTV.Length;
-
-        screenCCTV[currentCameraIndex].gameObject.SetActive(true);
-
-        isNightMode = false;
-        batteryController = FindObjectOfType<BatteryController>();
-        batteryController.ToggleNightMode(isNightMode);
-        foreach(GameObject screenNight in nightVisionCCTV)
-        {
-            screenNight.SetActive(false);
-        }
     }
 
     public void ReturnToMainCamera()
     {
-        currentCameraIndex = -1;
-        if(currentCameraIndex >= 0 && cctvCameras[currentCameraIndex] != null)
-        {
-            cctvCameras[currentCameraIndex].gameObject.SetActive(false);
-        }
-
         mainCamera.enabled=true;
         cctvPostprocessing.SetActive(false);
         playerPostprocessing.SetActive(true);

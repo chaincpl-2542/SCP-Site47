@@ -13,7 +13,7 @@ public class GeneratorRoomSCPEvent : MonoBehaviour
     public AudioSource glitchSound;
     private Transform playerTransform; 
 
-    private bool eventTriggered = false;
+    public bool eventTriggered = false;
 
     void OnTriggerStay(Collider other)
     {

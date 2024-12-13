@@ -19,7 +19,6 @@ public class SCPTeleport : MonoBehaviour
 
     private void Start()
     {
-        TabletManager.Instance.changeCamera += TeleportTo;
         RandomRoom();
     }
 
@@ -67,16 +66,5 @@ public class SCPTeleport : MonoBehaviour
             readyToTeleport = false;
         }
 
-    }
-
-    void TeleportTo()
-    {
-        if(readyToTeleport)
-        {
-            transform.position = selectedSpawnPoint.transform.position;
-            Debug.Log("SCP teleported to: " + selectedSpawnPoint.name);
-            RandomRoom();
-            timer = 0;
-        }
     }
 }
