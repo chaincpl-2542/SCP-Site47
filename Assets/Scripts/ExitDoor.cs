@@ -43,7 +43,7 @@ public class ExitDoor : MonoBehaviour, IInteractable
 
             if (!check)
             {
-                GuideTextController.Instance.ForceShowDialogue("Looks like I'll need access level 5.");
+                GuideTextController.Instance.ForceShowDialogue("Looks like I'll need access level 5 to open the exit door.");
                 check = true;
             }
 
