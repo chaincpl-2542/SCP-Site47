@@ -20,6 +20,7 @@ public class ScpTrigger : MonoBehaviour
             {
                 eventControl.HideSCP();
                 gameObject.SetActive(false);
+                ActionSoundControl.Instance.StopChaseMusic();
             }
         }
     }

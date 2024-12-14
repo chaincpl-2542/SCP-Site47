@@ -13,7 +13,6 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            //DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -29,7 +28,7 @@ public class GameManager : MonoBehaviour
     public IEnumerator DelayLoadscene(int num,float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(num);
     }
     public IEnumerator RestartGame(float num)
     {
@@ -39,7 +38,7 @@ public class GameManager : MonoBehaviour
 
     public void EndGame()
     {
-        StartCoroutine(DelayLoadscene(0,0));
+        StartCoroutine(DelayLoadscene(2,2));
     }
 
     public void StartGame()

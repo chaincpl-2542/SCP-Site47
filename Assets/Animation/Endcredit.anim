@@ -24,15 +24,15 @@ AnimationClip:
       - serializedVersion: 3
         time: 0
         value: -2369
-        inSlope: 128.83333
-        outSlope: 128.83333
+        inSlope: 134.53334
+        outSlope: 134.53334
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 30
-        value: 1496
+        value: 1667
         inSlope: 112.94082
         outSlope: -6.850918
         tangentMode: 1
@@ -40,14 +40,14 @@ AnimationClip:
         inWeight: 0.12723967
         outWeight: 0.3205877
       - serializedVersion: 3
-        time: 35.033333
-        value: 1496
+        time: 35
+        value: 1667
         inSlope: 0
         outSlope: 0
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
+        outWeight: 0.3205877
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
@@ -79,7 +79,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 35.033333
+    m_StopTime: 35
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -102,15 +102,15 @@ AnimationClip:
       - serializedVersion: 3
         time: 0
         value: -2369
-        inSlope: 128.83333
-        outSlope: 128.83333
+        inSlope: 134.53334
+        outSlope: 134.53334
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
         time: 30
-        value: 1496
+        value: 1667
         inSlope: 112.94082
         outSlope: -6.850918
         tangentMode: 1
@@ -118,14 +118,14 @@ AnimationClip:
         inWeight: 0.12723967
         outWeight: 0.3205877
       - serializedVersion: 3
-        time: 35.033333
-        value: 1496
+        time: 35
+        value: 1667
         inSlope: 0
         outSlope: 0
         tangentMode: 34
         weightedMode: 0
         inWeight: 0.33333334
-        outWeight: 0.33333334
+        outWeight: 0.3205877
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4

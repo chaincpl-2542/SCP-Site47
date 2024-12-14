@@ -4,11 +4,24 @@ using UnityEngine;
 
 public class ActionSoundControl : MonoBehaviour
 {
+    private bool isChasing = false;
+
     public AudioSource detectionSound; // Sound when SCP detects the player
     public AudioSource chaseMusic; // Background music during a chase
     public float fadeSpeed = 1f; // Speed of fading in/out the chase music
+    public static ActionSoundControl Instance;
 
-    private bool isChasing = false;
+    private void Awake() 
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     public void PlayDetectionSound()
     {

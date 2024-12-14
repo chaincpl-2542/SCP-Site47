@@ -24,8 +24,8 @@ public class TabletManager : MonoBehaviour
     [SerializeField] private BatteryController batteryController;
     CCTVButtonHandler cctvButtonHandler;
     public ChargeStation chargeStation;
-    [SerializeField] private TextMeshProUGUI assessText;
-    [SerializeField] private int assessLevel = 3;
+    [SerializeField] private TextMeshProUGUI accessText;
+    [SerializeField] private int accessLevel = 3;
 
     [SerializeField] GameObject textJammer;
     private bool jammerCooldown = false;
@@ -52,7 +52,7 @@ public class TabletManager : MonoBehaviour
 
     void Start()
     {
-        assessText.text = "Assess Level : " + assessLevel;
+        accessText.text = "Access Level : " + accessLevel;
         cctvPostprocessing.SetActive(false);
         playerPostprocessing.SetActive(true);
         mainCamera.gameObject.SetActive(true);
@@ -70,22 +70,18 @@ public class TabletManager : MonoBehaviour
                 cctvButtonHandler = GetComponent<CCTVButtonHandler>();
                 cctvButtonHandler.CloseAllUI();
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                if (isTablet)
-                {
-                    if (Input.GetKeyDown(KeyCode.R))
-                    {
-                        ToggleNightVisionCamera();
-                        changeModeSound.Play();
-                    }
-                    
-                    if (_canJammer && Input.GetKeyDown(KeyCode.F))
-                    {
-                        UseJammer();
-                    }
-                }
+                ToggleNightVisionCamera();
+                changeModeSound.Play();
             }
+            
+            if (_canJammer && Input.GetKeyDown(KeyCode.F))
+            {
+                UseJammer();
+            }
+            
         }
         UpdateJammerCooldownSlider();
 
@@ -107,7 +103,7 @@ public class TabletManager : MonoBehaviour
     
     public int GetPlayerAccessLevel()
     {
-        return assessLevel;
+        return accessLevel;
     }
     
     public void PickJammer()
@@ -239,8 +235,10 @@ public class TabletManager : MonoBehaviour
         if (!isNightMode)
         {
             nightVisionCamera.SetActive(true);
+            screenVision.SetActive(false);
             isNightMode = true;
             batteryController.ToggleNightMode(isNightMode);
+            
         }
         else
         {
@@ -287,8 +285,8 @@ public class TabletManager : MonoBehaviour
 
     public void UpGradeAssessLevel()
     {
-        assessLevel = 5;
-        assessText.text = "Assess Level : " + assessLevel;
+        accessLevel = 5;
+        accessText.text = "Access Level : " + accessLevel;
     }
 
     private IEnumerator HideEffect()
